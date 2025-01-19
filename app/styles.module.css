@@ -1,0 +1,37 @@
+.container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.horizontal-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.access-input,
+.access-input:focus {
+    padding: 16px;
+    margin: 0 15px;
+    font-size: large;
+    border: none;
+    border-bottom: 4px solid #04AA6D;
+    outline: none;
+    font-weight: bold;
+}
+
+.access-button {
+    background-color: #04AA6D;
+    border: none;
+    color: white;
+    padding: 16px;
+    text-decoration: none;
+    margin: 0;
+    cursor: pointer;
+    font-family: 'Montserrat', 'Montserrat Fallback';
+    font-size: large;
+    font-weight: bold;
+}
