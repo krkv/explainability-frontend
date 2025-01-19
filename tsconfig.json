@@ -1,5 +1,23 @@
 {
   "compilerOptions": {
+    "baseUrl": "src/",
+    "paths": {
+      "@/actions/*": [
+        "actions/*"
+      ],
+      "@/components/*": [
+        "components/*"
+      ],
+      "@/lib/*": [
+        "lib/*"
+      ],
+      "@/types/*": [
+        "types/*"
+      ],
+      "@/styles/*": [
+        "styles/*"
+      ]
+    },
     "target": "ES2017",
     "lib": [
       "dom",
@@ -32,5 +50,4 @@
   "exclude": [
     "node_modules"
   ],
-  "baseUrl": "/"
 }

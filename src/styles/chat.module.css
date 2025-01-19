@@ -28,17 +28,18 @@
     padding: 16px;
     font-family: 'Montserrat', 'Montserrat Fallback';
     font-size: large;
-    border: 3px solid #ccc;
+    border: 3px solid #E1E5F2;
     outline: none;
     margin: 0 25px 0 0;
+    font-weight: bold;
 }
 
 .chat-input:focus {
-    border: 3px solid #777;
+    border: 3px solid #ccc;
 }
 
 .chat-button {
-    background-color: #04AA6D;
+    background-color: #1F7A8C;
     border: none;
     color: white;
     padding: 16px 32px;
@@ -54,5 +55,14 @@
     align-self: flex-end;
     padding: 25px;
     margin: 5px 25px;
-    background-color: #eee;
+    background-color: #BFDBF7;
+    border-radius: 15px 15px 0px 15px;
+}
+
+.message-assistant {
+    padding: 25px;
+    margin: 5px 25px;
+    background-color: #E1E5F2;
+    align-self: flex-start;
+    border-radius: 15px 15px 15px 0px;
 }

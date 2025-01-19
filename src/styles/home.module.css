@@ -18,13 +18,13 @@
     margin: 0 15px;
     font-size: large;
     border: none;
-    border-bottom: 4px solid #04AA6D;
+    border-bottom: 4px solid #1F7A8C;
     outline: none;
     font-weight: bold;
 }
 
 .access-button {
-    background-color: #04AA6D;
+    background-color: #1F7A8C;
     border: none;
     color: white;
     padding: 16px;

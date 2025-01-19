@@ -1,7 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { createSession } from '../lib/session'
+import { createSession } from '@/lib/session'
 
 const secretKey = process.env.ALLOWED_TOKEN
 

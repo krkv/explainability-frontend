@@ -1,5 +1,5 @@
-import styles from './styles.module.css'
-import { validateForm } from './actions/auth';
+import styles from '@/styles/home.module.css'
+import { validateForm } from '@/actions/auth';
 
 export default function AccessForm() {
     return (
