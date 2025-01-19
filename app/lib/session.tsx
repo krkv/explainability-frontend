@@ -19,7 +19,7 @@ export async function decrypt(session: string | undefined = '') {
             algorithms: ['HS256'],
         })
         return payload
-    } catch (error) {
+    } catch (_) {
         console.log('Failed to verify session')
     }
 }
