@@ -1,7 +1,7 @@
 import '@/styles/global.css'
-import { Montserrat } from 'next/font/google'
+import { Noto_Sans } from 'next/font/google'
 
-const montserrat = Montserrat({
+const font = Noto_Sans({
     subsets: ['latin'],
 })
 
@@ -11,7 +11,7 @@ export default function RootLayout({
     children: React.ReactNode
 }) {
     return (
-        <html lang="en" className={montserrat.className}>
+        <html lang="en" className={font.className}>
             <body>{children}</body>
         </html>
     )

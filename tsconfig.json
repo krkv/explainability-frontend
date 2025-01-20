@@ -5,6 +5,9 @@
       "@/actions/*": [
         "actions/*"
       ],
+      "@/assets/*": [
+        "assets/*"
+      ],
       "@/components/*": [
         "components/*"
       ],
