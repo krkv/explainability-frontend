@@ -17,7 +17,7 @@ function formatMessages(messages: ChatMessage[]) {
         if (message.role === 'assistant') {
             return <div key={index} className={styles['bubble-assistant']}>
                 <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />
-                <div className={styles['message-assistant']}>{message.content}</div>
+                <div className={styles['message-assistant']} dangerouslySetInnerHTML={{ __html: message.content }}></div>
             </div>
         }
         return <div key={index} className={styles['message-user']}>{message.content}</div>
