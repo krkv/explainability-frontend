@@ -1,10 +1,10 @@
 import homeStyles from '@/styles/home.module.css'
-import AccessForm from '@/components/AccessForm'
+import Link from 'next/link'
 
 export default function HomePage() {
     return (
         <div className={homeStyles.container}>
-            <AccessForm />
+            <Link href="/chat">Chat</Link>
         </div>
     )
 }
