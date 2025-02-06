@@ -126,6 +126,28 @@
     align-self: flex-start;
     border-radius: 15px 15px 15px 0px;
     margin: 0 0 0 10px;
+    overflow-x: auto;
+}
+
+.message-assistant table {
+    border-collapse: collapse;
+    border-width: 0px;
+    width: 100%;
+    background-color: #fff;
+    border-radius: 15px;
+}
+
+.message-assistant table th,
+.message-assistant table td {
+    border-width: 0px;
+    border-right: 1px solid #E1E5F2;
+    padding: 5px;
+    text-align: center;
+}
+
+.message-assistant table tr {
+    border-width: 0px;
+    border-bottom: 1px solid #E1E5F2;
 }
 
 /* HTML: <div class="loader"></div> */
