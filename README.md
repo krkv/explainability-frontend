@@ -16,7 +16,7 @@ Navigate to the root directory of the application.
 npm install
 ```
 
-### Create .env file and set the HF token
+### Create .env file and set the backend path
 
 You can use `.env.example` file as an example of a `.env` file.
 
