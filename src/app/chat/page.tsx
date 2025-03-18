@@ -37,7 +37,7 @@ export default function Chat() {
         async function addAssistantMessage() {
             const lastMessage = messages?.[0]
             if (lastMessage && lastMessage.role === 'user') {
-                const conversation = messages.toReversed()
+                const conversation = messages.toReversed().filter((message) => message.role === 'user')
                 const assistantResponse = await getAssistantResponse(conversation)
                 const assistantMessage: ChatMessage = {
                     role: 'assistant',
