@@ -150,6 +150,36 @@
     border-bottom: 1px solid #E1E5F2;
 }
 
+.message-assistant code {
+    background-color: #f1f1f1;
+    color: darkred;
+    padding: 2px;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-family: monospace;
+}
+
+.message-assistant var {
+    color: darkblue;
+    font-family: monospace;
+    background-color: #f1f1f1;
+    padding: 2px;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-style: normal;
+    font-weight: bold;
+}
+
+.message-assistant samp {
+    color: darkgreen;
+    font-family: monospace;
+    background-color: #f1f1f1;
+    padding: 2px;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
 /* HTML: <div class="loader"></div> */
 /* HTML: <div class="loader"></div> */
 .loader {
