@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { getAssistantResponse } from '@/actions/assistant'
-import { ChatMessage } from '@/types/chat'
+import { ChatMessage, ModelType } from '@/types/chat'
 import Image from 'next/image'
 import assistantIcon from '@/assets/claire-b.png'
 import styles from '@/styles/chat.module.css'
@@ -32,13 +32,15 @@ const loadingMessage = <div key={0} className={styles['bubble-assistant']}>
 export default function Chat() {
     const [messages, setMessages] = useState([welcomeMessage])
     const [loading, setLoading] = useState(false)
+    const [showModelDropdown, setShowModelDropdown] = useState(false)
+    const [model, setModel] = useState(ModelType.Llama)
 
     useEffect(() => {
         async function addAssistantMessage() {
             const lastMessage = messages?.[0]
             if (lastMessage && lastMessage.role === 'user') {
                 const conversation = messages.toReversed()
-                const assistantResponse = await getAssistantResponse(conversation)
+                const assistantResponse = await getAssistantResponse(conversation, model)
                 const assistantMessage: ChatMessage = {
                     role: 'assistant',
                     content: assistantResponse
@@ -58,10 +60,32 @@ export default function Chat() {
         setLoading(true)
     }
 
+    function resetConversation() {
+        setMessages([welcomeMessage])
+    }
+
+    function toggleModelDropdown() {
+        setShowModelDropdown(!showModelDropdown)
+    }
+
+    function onSelectModel(event) {
+        setModel(event.target.innerText)
+        setShowModelDropdown(false)
+    }
+
     return (
         <div className={styles['page-container']}>
             <div className={styles['chat-toolbar']}>
-                <div className={styles['chat-info']}>meta-llama/Llama-3.3-70B-Instruct &#10058;</div>
+                <div className={styles['chat-info']}>
+                    <div className={styles['dropdown']} onClick={toggleModelDropdown}>
+                        <a className={styles['dropdown-button']}>Model: {model}</a>
+                        <div className={showModelDropdown ? styles['dropdown-content'] : styles['hidden']} onClick={onSelectModel}>
+                            <a className={styles['dropdown-button']} onClick={onSelectModel}>{ModelType.Llama}</a>
+                            <a className={styles['dropdown-button']} onClick={onSelectModel}>{ModelType.Gemini}</a>
+                        </div>
+                    </div>
+                </div>
+                <button className={styles['chat-button-reset']} onClick={resetConversation}>Reset</button>
             </div>
             <div className={styles['messages-container']}>
                 {loading ? loadingMessage : null}
