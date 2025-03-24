@@ -68,8 +68,9 @@
     border: 3px solid #E1E5F2;
     outline: none;
     margin: 0 25px 0 0;
-    font-weight: bold;
     border-radius: 15px;
+    resize: none;
+    scrollbar-width: none;
 }
 
 .chat-input:focus {
