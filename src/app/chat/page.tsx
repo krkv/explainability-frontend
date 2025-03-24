@@ -92,7 +92,7 @@ export default function Chat() {
                 {formatMessages(messages)}
             </div>
             <form action={addUserMessage} className={styles['chat-footer']}>
-                <textarea name='userMessage' className={styles['chat-input']} placeholder="Type your message here..." rows={1}></textarea>
+                <input name='userMessage' className={styles['chat-input']} placeholder="Type your message here..."></input>
                 <button className={styles['chat-button']} disabled={loading}>Send</button>
             </form>
         </div>
