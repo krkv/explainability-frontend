@@ -2,6 +2,33 @@
     width: 100%;
     height: 100vh;
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 1068px) {
+    .page-container {
+        height: auto;
+        flex-direction: column;
+    }
+}
+
+.demo-container {
+    width: 100%;
+    max-width: 360px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0;
+    overflow: auto;
+}
+
+.chat-container {
+    height: 100vh;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-end;
@@ -45,6 +72,39 @@
     padding: 20px;
 }
 
+.toolbar-button {
+    background-color: #fff;
+    padding: 8px 16px;
+    border-radius: 16px;
+    border: 1px solid #33415C;
+    font-family: 'Noto Sans', serif;
+    font-size: x-small;
+    font-weight: bold;
+    color: #33415C;
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.toolbar-button:last-child {
+    margin-right: 0;
+}
+
+.toolbar-button:hover {
+    background-color: #33415C;
+    color: #fff;
+}
+
+.red-button {
+    color: #a30000;
+    background-color: #fff;
+    border-color: #a30000;
+}
+
+.red-button:hover {
+    background-color: #a30000;
+    color: #fff;
+}
+
 .dropdown {
     font-size: x-small;
     margin-right: 8px;
@@ -52,23 +112,12 @@
     background-color: #fff;
 }
 
-.dropdown-button {
-    padding: 8px 16px;
-    border-radius: 15px;
-    border: 1px solid #33415C;
-    background-color: #fff;
-    color: #33415C;
-    font-weight: bold;
+.dropdown .toolbar-button {
     display: block;
 }
 
-.dropdown-button:nth-child(2) {
+.dropdown .toolbar-button:nth-child(2) {
     margin-top: 8px;
-}
-
-.dropdown-button:hover {
-    background-color: #33415C;
-    color: #fff;
 }
 
 .dropdown-content {
@@ -78,26 +127,31 @@
     margin: 8px 0 0 0;
 }
 
-.hidden {
-    display: none;
-}
-
-.chat-button-reset {
-    color: #a30000;
-    background-color: #fff;
-    border: 1px solid #a30000;
-    padding: 8px 16px;
-    text-decoration: none;
-    margin: 0;
-    cursor: pointer;
+.demo-container h2 {
     font-family: 'Noto Sans', serif;
-    font-size: x-small;
-    font-weight: bold;
-    border-radius: 15px;
+    font-size: medium;
+    margin: 8px 8px 0 42px;
 }
 
-.chat-button-reset:hover {
-    background-color: #a30000;
+.demo-container li {
+    font-family: 'Noto Sans', serif;
+    font-size: small;
+}
+
+.demo-button {
+    background-color: #fff;
+    padding: 4px 8px;
+    border: 1px solid #33415C;
+    font-family: 'Noto Sans', serif;
+    font-size: small;
+    color: #33415C;
+    margin: 4px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.demo-button:hover {
+    background-color: #33415C;
     color: #fff;
 }
 
@@ -228,6 +282,10 @@
     border-radius: 5px;
     font-size: 1.1em;
     font-weight: bold;
+}
+
+.hidden {
+    display: none;
 }
 
 /* HTML: <div class="loader"></div> */

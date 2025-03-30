@@ -1,6 +1,8 @@
 'use client'
 
 import { useEffect, useState } from "react"
+import classNames from 'classnames';
+
 import { getAssistantResponse } from '@/actions/assistant'
 import { ChatMessage, ModelType } from '@/types/chat'
 import Image from 'next/image'
@@ -29,11 +31,22 @@ const loadingMessage = <div key={0} className={styles['bubble-assistant']}>
     <div className={styles['message-assistant']}><div className={styles['loader']}></div></div>
 </div>
 
+const demoMessagesA = [
+    'Hello, please tell me about yourself',
+    'What kind of dataset is currently loaded?',
+    'Yes, what is the distribution of outdoor temperature, for example?',
+    'Interesting, I want to see the data for outdoor temperature higher than 26 degrees',
+    'And what are the predictions for this group?',
+    'I wonder how correct are these predictions',
+    'So what is the accuracy of the model, overall?',
+]
+
 export default function Chat() {
     const [messages, setMessages] = useState([welcomeMessage])
     const [loading, setLoading] = useState(false)
     const [showModelDropdown, setShowModelDropdown] = useState(false)
     const [model, setModel] = useState(ModelType.Llama)
+    const [showSidebar, setShowSidebar] = useState(false)
 
     useEffect(() => {
         async function addAssistantMessage() {
@@ -68,33 +81,56 @@ export default function Chat() {
         setShowModelDropdown(!showModelDropdown)
     }
 
+    function toggleSidebar() {
+        setShowSidebar(!showSidebar)
+    }
+
     function onSelectModel(event) {
         setModel(event.target.innerText)
         setShowModelDropdown(false)
     }
 
+    function handleDemoButtonClick(event) {
+        const userMessage = event.target.innerText
+        setMessages([{ role: 'user', content: userMessage }, ...messages])
+        setLoading(true)
+    }
+
     return (
         <div className={styles['page-container']}>
-            <div className={styles['chat-toolbar']}>
-                <div className={styles['chat-info']}>
-                    <div className={styles['dropdown']} onClick={toggleModelDropdown}>
-                        <a className={styles['dropdown-button']}>Model: {model}</a>
-                        <div className={showModelDropdown ? styles['dropdown-content'] : styles['hidden']} onClick={onSelectModel}>
-                            <a className={styles['dropdown-button']} onClick={onSelectModel}>{ModelType.Llama}</a>
-                            <a className={styles['dropdown-button']} onClick={onSelectModel}>{ModelType.Gemini}</a>
+            <div className={styles['chat-container']}>
+                <div className={styles['chat-toolbar']}>
+                    <div className={styles['chat-info']}>
+                        <div className={styles['dropdown']} onClick={toggleModelDropdown}>
+                            <a className={styles['toolbar-button']}>Model: {model}</a>
+                            <div className={showModelDropdown ? styles['dropdown-content'] : styles['hidden']} onClick={onSelectModel}>
+                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Llama}</a>
+                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Gemini}</a>
+                            </div>
                         </div>
                     </div>
+                    <div>
+                        <button className={classNames(styles['toolbar-button'], styles['red-button'])} onClick={resetConversation}>Reset</button>
+                        <button className={styles['toolbar-button']} onClick={toggleSidebar}>Demos</button>
+                    </div>
                 </div>
-                <button className={styles['chat-button-reset']} onClick={resetConversation}>Reset</button>
+                <div className={styles['messages-container']}>
+                    {loading ? loadingMessage : null}
+                    {formatMessages(messages)}
+                </div>
+                <form action={addUserMessage} className={styles['chat-footer']}>
+                    <input name='userMessage' className={styles['chat-input']} placeholder="Type your message here..."></input>
+                    <button className={styles['chat-button']} disabled={loading}>Send</button>
+                </form>
             </div>
-            <div className={styles['messages-container']}>
-                {loading ? loadingMessage : null}
-                {formatMessages(messages)}
+            <div className={showSidebar ? styles['demo-container'] : styles['hidden']}>
+                <h2>Demo A</h2>
+                <ol>
+                    {demoMessagesA.map((message, index) => (
+                        <li key={index}><button key={index} className={styles['demo-button']} onClick={handleDemoButtonClick}>{message}</button></li>
+                    ))}
+                </ol>
             </div>
-            <form action={addUserMessage} className={styles['chat-footer']}>
-                <input name='userMessage' className={styles['chat-input']} placeholder="Type your message here..."></input>
-                <button className={styles['chat-button']} disabled={loading}>Send</button>
-            </form>
         </div>
     )
 }
