@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import classNames from 'classnames';
+import { getNewConversationId, saveConversationToFirestore } from "@/actions/firebase"
 
 import { getAssistantResponse } from '@/actions/assistant'
 import { ChatMessage, ModelType } from '@/types/chat'
@@ -53,6 +54,7 @@ export default function Chat() {
     const [model, setModel] = useState(ModelType.Llama)
     const [showSidebar, setShowSidebar] = useState(false)
     const [selectedDemo, setSelectedDemo] = useState('A')
+    const [docRefId, setDocRefId] = useState(null)
 
     useEffect(() => {
         async function addAssistantMessage() {
@@ -71,6 +73,19 @@ export default function Chat() {
         addAssistantMessage()
     }, [messages])
 
+    useEffect(() => {
+        async function saveConversation() {
+            if (!docRefId) {
+                const id = await getNewConversationId()
+                setDocRefId(id)
+            }
+            if (messages.length > 1) {
+                await saveConversationToFirestore(messages.toReversed(), docRefId)
+            }
+        }
+        saveConversation()
+    }, [messages])
+
     function addUserMessage(formData) {
         const userMessage = formData.get('userMessage')
         if (userMessage !== '') {
@@ -81,6 +96,7 @@ export default function Chat() {
 
     function resetConversation() {
         setMessages([welcomeMessage])
+        setDocRefId(null)
     }
 
     function toggleModelDropdown() {
