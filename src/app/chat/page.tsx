@@ -31,15 +31,20 @@ const loadingMessage = <div key={0} className={styles['bubble-assistant']}>
     <div className={styles['message-assistant']}><div className={styles['loader']}></div></div>
 </div>
 
-const demoMessagesA = [
-    'Hello, please tell me about yourself',
-    'What kind of dataset is currently loaded?',
-    'Yes, what is the distribution of outdoor temperature, for example?',
-    'Interesting, I want to see the data for outdoor temperature higher than 26 degrees',
-    'And what are the predictions for this group?',
-    'I wonder how correct are these predictions',
-    'So what is the accuracy of the model, overall?',
-]
+const demoMessages = {
+    'A': ['Hello, please tell me about yourself',
+        'What kind of dataset is currently loaded?',
+        'Yes, what is the distribution of outdoor temperature, for example?',
+        'Interesting, I want to see the data for outdoor temperature higher than 26 degrees',
+        'And what are the predictions for this group?',
+        'I wonder how correct are these predictions',
+        'So what is the accuracy of the model, overall?'],
+    'B': ['Hello, please tell me about yourself',
+        'What kind of dataset is currently loaded?'],
+    'C': ['Hello, please tell me about yourself']
+}
+
+const demoOptions = demoMessages ? Object.keys(demoMessages) : []
 
 export default function Chat() {
     const [messages, setMessages] = useState([welcomeMessage])
@@ -47,6 +52,7 @@ export default function Chat() {
     const [showModelDropdown, setShowModelDropdown] = useState(false)
     const [model, setModel] = useState(ModelType.Llama)
     const [showSidebar, setShowSidebar] = useState(false)
+    const [selectedDemo, setSelectedDemo] = useState('A')
 
     useEffect(() => {
         async function addAssistantMessage() {
@@ -69,8 +75,8 @@ export default function Chat() {
         const userMessage = formData.get('userMessage')
         if (userMessage !== '') {
             setMessages([{ role: 'user', content: userMessage }, ...messages])
+            setLoading(true)
         }
-        setLoading(true)
     }
 
     function resetConversation() {
@@ -124,13 +130,23 @@ export default function Chat() {
                 </form>
             </div>
             <div className={showSidebar ? styles['demo-container'] : styles['hidden']}>
-                <h2>Demo A</h2>
+                <h2>
+                    {demoOptions.map((option) => (
+                        <button
+                            key={option}
+                            className={classNames(styles['demo-button'], styles['demo-button-big'], styles['button-' + option.toLowerCase()])}
+                            disabled={selectedDemo === option}
+                            onClick={() => setSelectedDemo(option)}>
+                            {selectedDemo === option ? `Scenario ${option}` : option}
+                        </button>
+                    ))}
+                </h2>
                 <ol>
-                    {demoMessagesA.map((message, index) => (
-                        <li key={index}><button key={index} className={styles['demo-button']} onClick={handleDemoButtonClick}>{message}</button></li>
+                    {demoMessages[selectedDemo].map((message, index) => (
+                        <li key={index}><button key={index} className={classNames(styles['demo-button'])} onClick={handleDemoButtonClick}>{message}</button></li>
                     ))}
                 </ol>
             </div>
-        </div>
+        </div >
     )
 }
