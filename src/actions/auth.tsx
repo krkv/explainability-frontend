@@ -1,10 +1,10 @@
 'use server'
 
-import { redirect } from 'next/navigation'
-import { createSession } from '@/lib/session'
+// import { redirect } from 'next/navigation'
+// import { createSession } from '@/lib/session'
 import { handleUserLogin } from '@/actions/firebase'
 
-const secretKey = process.env.ALLOWED_TOKEN
+// const secretKey = process.env.ALLOWED_TOKEN
 
 export async function validateForm(f: FormData) {
     const formJson = Object.fromEntries(f.entries())

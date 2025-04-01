@@ -71,7 +71,7 @@ export default function Chat() {
             }
         }
         addAssistantMessage()
-    }, [messages])
+    }, [messages, model])
 
     useEffect(() => {
         async function saveConversation() {
@@ -84,7 +84,7 @@ export default function Chat() {
             }
         }
         saveConversation()
-    }, [messages])
+    }, [messages, docRefId])
 
     function addUserMessage(formData) {
         const userMessage = formData.get('userMessage')
