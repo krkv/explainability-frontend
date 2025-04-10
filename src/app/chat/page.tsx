@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import classNames from 'classnames';
-import { getNewConversationId, saveConversationToFirestore } from "@/actions/firebase"
+import { getNewConversationId, saveConversationToFirestore } from "@/lib/firebase"
 
 import { getAssistantResponse } from '@/actions/assistant'
 import { ChatMessage, ModelType } from '@/types/chat'
