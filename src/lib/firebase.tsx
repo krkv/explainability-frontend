@@ -4,6 +4,7 @@ import { ChatMessage } from "@/types/chat"
 import { initializeApp } from "firebase/app"
 import { getFirestore, doc, collection, setDoc, serverTimestamp, updateDoc } from "firebase/firestore"
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
+import { cookies } from 'next/headers'
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -20,12 +21,7 @@ const db = getFirestore(app)
 
 export async function getNewConversationId() {
     const docRef = doc(collection(db, "conversations"))
-    const auth = getAuth()
-    const user = auth.currentUser
-    if (!user) {
-        throw new Error("User is not authenticated")
-    }
-    const userId = user.uid
+    const userId = (await cookies()).get('userId')?.value
     await setDoc(docRef, {
         createdAt: serverTimestamp(),
         userId,
