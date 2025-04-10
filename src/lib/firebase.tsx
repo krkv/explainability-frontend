@@ -20,8 +20,15 @@ const db = getFirestore(app)
 
 export async function getNewConversationId() {
     const docRef = doc(collection(db, "conversations"))
+    const auth = getAuth()
+    const user = auth.currentUser
+    if (!user) {
+        throw new Error("User is not authenticated")
+    }
+    const userId = user.uid
     await setDoc(docRef, {
-        createdAt: serverTimestamp()
+        createdAt: serverTimestamp(),
+        userId,
     })
     return docRef.id
 }
