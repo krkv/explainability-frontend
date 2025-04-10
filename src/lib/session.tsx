@@ -1,5 +1,4 @@
 import 'server-only'
-
 import { cookies } from 'next/headers'
 import { SignJWT, jwtVerify } from 'jose'
 
@@ -14,7 +13,8 @@ export async function encrypt(payload: { userId: string, expiresAt: Date }) {
         .sign(encodedKey)
 }
 
-export async function decrypt(session: string | undefined = '') {
+export async function decrypt(session: string | undefined) {
+    if (!session) return null
     try {
         const { payload } = await jwtVerify(session, encodedKey, {
             algorithms: ['HS256'],
