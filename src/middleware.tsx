@@ -14,7 +14,22 @@ export default async function middleware(req: NextRequest) {
 
     // 3. Decrypt the session from the cookie
     const cookie = (await cookies()).get('session')?.value
+
+    if (isProtectedRoute && !cookie) {
+        // If the session cookie is not present, redirect to home
+        return NextResponse.redirect(new URL('/', req.nextUrl))
+    }
+
     const session = await decrypt(cookie)
+
+    const expired = session?.expiresAt < new Date()
+    if (isProtectedRoute && expired) {
+        // If the session is expired, redirect to home
+        const cookieStore = await cookies()
+        cookieStore.delete('session')
+        cookieStore.delete('userId')
+        return NextResponse.redirect(new URL('/', req.nextUrl))
+    }
 
     // 4. Redirect to home if the user is not authenticated
     if (isProtectedRoute && !session?.userId) {
