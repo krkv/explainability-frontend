@@ -5,5 +5,5 @@ export interface ChatMessage {
 
 export enum ModelType {
     Llama = 'Llama 3.3 70B Instruct',
-    Gemini = 'Gemini 2.0 Flash Lite'
+    Gemini = 'Gemini 2.0 Flash'
 }

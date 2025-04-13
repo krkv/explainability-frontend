@@ -23,7 +23,7 @@ export async function getAssistantResponse(conversation: ChatMessage[], model: M
         })
 
         if (!response.ok) {
-            return "Well, this is confusing. Please, try again later."
+            return "I'm having trouble at the server &#128543; Please, try again later."
         }
 
         const json = await response.json();
@@ -31,6 +31,6 @@ export async function getAssistantResponse(conversation: ChatMessage[], model: M
         return json.assistantResponse
     } catch (error) {
         console.error(error.message);
-        return "I'm having trouble connecting to the server. Please, try again later."
+        return "I'm having trouble connecting to the server &#128543; Please, try again later."
     }
 }
