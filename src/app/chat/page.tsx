@@ -40,9 +40,18 @@ const demoMessages = {
         'And what are the predictions for this group?',
         'I wonder how correct are these predictions',
         'So what is the accuracy of the model, overall?'],
-    'B': ['Hello, please tell me about yourself',
-        'What kind of dataset is currently loaded?'],
-    'C': ['Hello, please tell me about yourself']
+    'B': ['Please show me ids of the data points',
+        'Show me id 1',
+        'What is the prediction?',
+        'Why is it so?',
+        'Is this prediction correct?',
+        'How can we flip this prediction?',
+        'What would it predict if indoor temperature was 20 degrees?'],
+    'C': ['Tell me about the dataset',
+        'How about the model?',
+        'What kind of explainer is used?',
+        'Predict a new instance with indoor 15, outdoor 25 and past electricity 980',
+    ]
 }
 
 const demoOptions = demoMessages ? Object.keys(demoMessages) : []
