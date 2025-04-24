@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import classNames from 'classnames';
 import { getNewConversationId, saveConversationToFirestore } from "@/lib/firebase"
-
+import { logout } from "@/actions/auth"
 import { getAssistantResponse } from '@/actions/assistant'
 import { ChatMessage, ModelType } from '@/types/chat'
 import Image from 'next/image'
@@ -60,7 +60,7 @@ export default function Chat() {
     const [messages, setMessages] = useState([welcomeMessage])
     const [loading, setLoading] = useState(false)
     const [showModelDropdown, setShowModelDropdown] = useState(false)
-    const [model, setModel] = useState(ModelType.Llama)
+    const [model, setModel] = useState(ModelType.Gemini)
     const [showSidebar, setShowSidebar] = useState(false)
     const [selectedDemo, setSelectedDemo] = useState('A')
     const [docRefId, setDocRefId] = useState(null)
@@ -127,6 +127,10 @@ export default function Chat() {
         setLoading(true)
     }
 
+    function handleLogout() {
+        logout()
+    }
+
     return (
         <div className={styles['page-container']}>
             <div className={styles['chat-container']}>
@@ -135,14 +139,15 @@ export default function Chat() {
                         <div className={styles['dropdown']} onClick={toggleModelDropdown}>
                             <a className={styles['toolbar-button']}>Model: {model}</a>
                             <div className={showModelDropdown ? styles['dropdown-content'] : styles['hidden']} onClick={onSelectModel}>
-                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Llama}</a>
                                 <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Gemini}</a>
+                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Llama}</a>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <button className={classNames(styles['toolbar-button'], styles['red-button'])} onClick={resetConversation}>Reset</button>
                         <button className={styles['toolbar-button']} onClick={toggleSidebar}>Demos</button>
+                        <button className={classNames(styles['toolbar-button'], styles['red-button'])} onClick={resetConversation}>Reset</button>
+                        <button className={classNames(styles['toolbar-button'], styles['red-button'])} onClick={handleLogout}>Logout</button>
                     </div>
                 </div>
                 <div className={styles['messages-container']}>
@@ -162,13 +167,14 @@ export default function Chat() {
                             className={classNames(styles['demo-button'], styles['demo-button-big'], styles['button-' + option.toLowerCase()])}
                             disabled={selectedDemo === option}
                             onClick={() => setSelectedDemo(option)}>
-                            {selectedDemo === option ? `Scenario ${option}` : option}
+                            {selectedDemo === option ? `Demo ${option}` : option}
                         </button>
                     ))}
                 </h2>
+                <p>Follow a predefined scenario and quickly supply example prompts to the assistant:</p>
                 <ol>
                     {demoMessages[selectedDemo].map((message, index) => (
-                        <li key={index}><button key={index} className={classNames(styles['demo-button'])} onClick={handleDemoButtonClick}>{message}</button></li>
+                        <li key={index}><button key={index} className={classNames(styles['demo-button'])} onClick={handleDemoButtonClick} disabled={loading}>{message}</button></li>
                     ))}
                 </ol>
             </div>

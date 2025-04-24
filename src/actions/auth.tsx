@@ -1,7 +1,7 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { createSession } from '@/lib/session'
+import { createSession, deleteSession } from '@/lib/session'
 import { handleUserLogin } from '@/lib/firebase'
 
 export async function validateForm(f: FormData) {
@@ -13,4 +13,9 @@ export async function validateForm(f: FormData) {
         await createSession(user.uid)
         redirect('/chat')
     }
+}
+
+export async function logout() {
+    await deleteSession()
+    redirect('/')
 }
