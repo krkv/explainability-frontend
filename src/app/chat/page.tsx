@@ -19,8 +19,8 @@ function formatMessages(messages: ChatMessage[]) {
     return messages.map((message, index) => {
         if (message.role === 'assistant') {
             return <div key={index} className={styles['bubble-assistant']}>
-                <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />
-                <div className={styles['message-assistant']} dangerouslySetInnerHTML={{ __html: message.content }}></div>
+                {(index === 0) && <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />}
+                <div className={classNames(styles['message-assistant'], index !== 0 ? styles['message-assistant-padded'] : null)} dangerouslySetInnerHTML={{ __html: message.content }}></div>
             </div>
         }
         return <div key={index} className={styles['message-user']}>{message.content}</div>
@@ -71,12 +71,21 @@ export default function Chat() {
             if (lastMessage && lastMessage.role === 'user') {
                 const conversation = messages.toReversed()
                 const assistantResponse = await getAssistantResponse(conversation, model)
-                const assistantMessage: ChatMessage = {
-                    role: 'assistant',
-                    content: assistantResponse
+                const newAssistantMessages = []
+                if (assistantResponse.freeform_response) {
+                    newAssistantMessages.push({
+                        role: 'assistant',
+                        content: `<p>${assistantResponse.freeform_response}</p> ${assistantResponse.function_calls.length > 0 ? '<p>Calling functions: ' + assistantResponse.function_calls.map(call => `<code>${call}</code>`).join(', ') + '</p>' : ''}`
+                    })
+                }
+                if (assistantResponse.parse) {
+                    newAssistantMessages.push({
+                        role: 'assistant',
+                        content: assistantResponse.parse
+                    })
                 }
                 setLoading(false)
-                setMessages([assistantMessage, ...messages])
+                setMessages([...newAssistantMessages.toReversed(), ...messages])
             }
         }
         addAssistantMessage()

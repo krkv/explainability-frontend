@@ -23,7 +23,10 @@ export async function getAssistantResponse(conversation: ChatMessage[], model: M
         })
 
         if (!response.ok) {
-            return "I'm having trouble at the server &#128543; Please, try again later."
+            return {
+                "freeform_response": "I'm having trouble at the server &#128543; Please, try again later.",
+                "function_calls": [],
+            }
         }
 
         const json = await response.json();
@@ -31,6 +34,9 @@ export async function getAssistantResponse(conversation: ChatMessage[], model: M
         return json.assistantResponse
     } catch (error) {
         console.error(error.message);
-        return "I'm having trouble connecting to the server &#128543; Please, try again later."
+        return {
+            "freeform_response": "I'm having trouble connecting to the server &#128543; Please, try again later.",
+            "function_calls": [],
+        }
     }
 }

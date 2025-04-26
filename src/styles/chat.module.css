@@ -273,8 +273,12 @@
     background-color: #E1E5F2;
     align-self: flex-start;
     border-radius: 15px 15px 15px 0px;
-    margin: 0 0 0 10px;
+    margin: 0px;
     overflow-x: auto;
+}
+
+.message-assistant-padded {
+    margin-left: 50px;
 }
 
 .message-assistant table {
@@ -326,6 +330,14 @@
     border-radius: 5px;
     font-size: 1.1em;
     font-weight: bold;
+}
+
+.message-assistant p:first-child {
+    margin-top: 0;
+}
+
+.message-assistant p:last-child {
+    margin-bottom: 0;
 }
 
 .hidden {
