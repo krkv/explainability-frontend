@@ -46,3 +46,10 @@
     font-size: large;
     font-weight: bold;
 }
+
+.page-container h1 {
+    font-family: 'Noto Sans', serif;
+    font-size: 2rem;
+    color: #1F7A8C;
+    margin: 32px 0 0 0;
+}

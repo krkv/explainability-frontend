@@ -187,6 +187,6 @@ export default function Chat() {
                     ))}
                 </ol>
             </div>
-        </div >
+        </div>
     )
 }
