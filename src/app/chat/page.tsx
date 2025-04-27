@@ -56,8 +56,6 @@ const demoMessages =
         'Predict a new instance with indoor 15, outdoor 25 and past electricity 980',
     ]
 
-const demoOptions = demoMessages ? Object.keys(demoMessages) : []
-
 export default function Chat() {
     const [messages, setMessages] = useState([welcomeMessage])
     const [loading, setLoading] = useState(false)
