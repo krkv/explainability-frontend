@@ -12,7 +12,10 @@ import styles from '@/styles/chat.module.css'
 
 const welcomeMessage: ChatMessage = {
     role: 'assistant',
-    content: "Hello! I'm Claire, your data science assistant. I am here to help you understand your data, models, predictions, and more. What would you like to know?"
+    content: "<p>Hello! I'm Claire, your explainability assistant. I am here to help you better understand your data, models and predictions, and more.</p>\
+    <p>Ask me anything using the chat box below. You can also use the examples on the right to see how I respond to different questions.</p>\
+    <p><b>I can tell you about the pre-loaded dataset and ML model, show you the data, predict instances using the ML model and explain predictions,\
+    check the accuracy of predictions, generate counterfactual explanations, answer what-if questions about a data sample, and predict a new sample</b>.</p>"
 }
 
 function formatMessages(messages: ChatMessage[]) {
@@ -32,27 +35,26 @@ const loadingMessage = <div key={0} className={styles['bubble-assistant']}>
     <div className={styles['message-assistant']}><div className={styles['loader']}></div></div>
 </div>
 
-const demoMessages = {
-    'A': ['Hello, please tell me about yourself',
+const demoMessages =
+    [
+        'Hello, please tell me about yourself',
         'What kind of dataset is currently loaded?',
-        'Yes, what is the distribution of outdoor temperature, for example?',
-        'Interesting, I want to see the data for outdoor temperature higher than 26 degrees',
-        'And what are the predictions for this group?',
-        'I wonder how correct are these predictions',
-        'So what is the accuracy of the model, overall?'],
-    'B': ['Please show me ids of the data points',
+        'Tell me more about the features',
+        'How about the model',
+        'How many samples are in the dataset?',
+        'How many data points have outdoor temperature warmer than 28 degrees?',
+        'Show me all IDs',
+        'I want to see the data for outdoor temperature higher than 28 degrees',
+        'And what are the predictions for previous group',
+        'Analyze if previous group is predicted correctly',
+        'What is the accuracy of the model, overall?',
         'Show me id 1',
-        'What is the prediction?',
-        'Why is it so?',
-        'Is this prediction correct?',
-        'How can we flip this prediction?',
-        'What would it predict if indoor temperature was 20 degrees?'],
-    'C': ['Tell me about the dataset',
-        'How about the model?',
+        'Predict id 1 and explain feature importance',
         'What kind of explainer is used?',
+        'How can we change the prediction for id 1?',
+        'What would model predict if indoor temperature for id 1 was set 20 degrees?',
         'Predict a new instance with indoor 15, outdoor 25 and past electricity 980',
     ]
-}
 
 const demoOptions = demoMessages ? Object.keys(demoMessages) : []
 
@@ -62,7 +64,6 @@ export default function Chat() {
     const [showModelDropdown, setShowModelDropdown] = useState(false)
     const [model, setModel] = useState(ModelType.Gemini)
     const [showSidebar, setShowSidebar] = useState(false)
-    const [selectedDemo, setSelectedDemo] = useState('A')
     const [docRefId, setDocRefId] = useState(null)
 
     useEffect(() => {
@@ -154,9 +155,9 @@ export default function Chat() {
                         </div>
                     </div>
                     <div>
-                        <button className={styles['toolbar-button']} onClick={toggleSidebar}>Demos</button>
                         <button className={classNames(styles['toolbar-button'], styles['red-button'])} onClick={resetConversation}>Reset</button>
                         <button className={classNames(styles['toolbar-button'], styles['red-button'])} onClick={handleLogout}>Logout</button>
+                        <button className={styles['toolbar-button']} onClick={toggleSidebar}>Examples</button>
                     </div>
                 </div>
                 <div className={styles['messages-container']}>
@@ -169,23 +170,13 @@ export default function Chat() {
                 </form>
             </div>
             <div className={showSidebar ? styles['demo-container'] : styles['hidden']}>
-                <h2>
-                    {demoOptions.map((option) => (
-                        <button
-                            key={option}
-                            className={classNames(styles['demo-button'], styles['demo-button-big'], styles['button-' + option.toLowerCase()])}
-                            disabled={selectedDemo === option}
-                            onClick={() => setSelectedDemo(option)}>
-                            {selectedDemo === option ? `Demo ${option}` : option}
-                        </button>
-                    ))}
-                </h2>
-                <p>Follow a predefined scenario and quickly supply example prompts to the assistant:</p>
-                <ol>
-                    {demoMessages[selectedDemo].map((message, index) => (
+                <h2>Example prompts</h2>
+                <p>You can try the examples below to see how the model responds to different questions:</p>
+                <ul>
+                    {demoMessages.map((message, index) => (
                         <li key={index}><button key={index} className={classNames(styles['demo-button'])} onClick={handleDemoButtonClick} disabled={loading}>{message}</button></li>
                     ))}
-                </ol>
+                </ul>
             </div>
         </div>
     )
