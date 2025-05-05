@@ -4,11 +4,12 @@ import { useEffect, useState } from "react"
 import classNames from 'classnames';
 import { getNewConversationId, saveConversationToFirestore } from "@/lib/firebase"
 import { logout } from "@/actions/auth"
-import { getAssistantResponse } from '@/actions/assistant'
+import { getAssistantResponse, getBackendReady } from '@/actions/assistant'
 import { ChatMessage, ModelType } from '@/types/chat'
 import Image from 'next/image'
 import assistantIcon from '@/assets/claire-b.png'
 import styles from '@/styles/chat.module.css'
+import loaders from '@/styles/loaders.module.css'
 
 const welcomeMessage: ChatMessage = {
     role: 'assistant',
@@ -32,7 +33,7 @@ function formatMessages(messages: ChatMessage[]) {
 
 const loadingMessage = <div key={0} className={styles['bubble-assistant']}>
     <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />
-    <div className={styles['message-assistant']}><div className={styles['loader']}></div></div>
+    <div className={styles['message-assistant']}><div className={loaders['message-loader']}></div></div>
 </div>
 
 const demoMessages =
@@ -63,6 +64,34 @@ export default function Chat() {
     const [model, setModel] = useState(ModelType.Gemini)
     const [showSidebar, setShowSidebar] = useState(false)
     const [docRefId, setDocRefId] = useState(null)
+    const [backendReady, setBackendReady] = useState(false)
+
+    useEffect(() => {
+        let isCancelled = false
+
+        async function checkBackendWithRetry(retries = 10, delay = 3000) {
+            for (let attempt = 0; attempt <= retries; attempt++) {
+                if (isCancelled) return
+                const ready = await getBackendReady()
+                if (ready) {
+                    setBackendReady(true)
+                    return;
+                }
+                if (attempt < retries) {
+                    await new Promise(resolve => setTimeout(resolve, delay))
+                }
+            }
+            setBackendReady(false)
+        }
+
+        if (!backendReady) {
+            checkBackendWithRetry()
+        }
+
+        return () => {
+            isCancelled = true
+        };
+    }, [backendReady])
 
     useEffect(() => {
         async function addAssistantMessage() {
@@ -137,6 +166,14 @@ export default function Chat() {
 
     function handleLogout() {
         logout()
+    }
+
+    if (!backendReady) {
+        return (
+            <div className={styles['page-container']}>
+                <div className={loaders['page-loader']}></div>
+            </div>
+        )
     }
 
     return (

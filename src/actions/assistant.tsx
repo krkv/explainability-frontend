@@ -5,6 +5,28 @@ import { ChatMessage, ModelType } from "@/types/chat"
 const backendHost = process.env.BACKEND_HOST
 const backendPort = process.env.BACKEND_PORT
 
+export async function getBackendReady() {
+    const endpoint = 'ready'
+
+    try {
+        const response = await fetch(`${backendHost}:${backendPort}/${endpoint}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            }
+        })
+
+        if (!response.ok) {
+            return false
+        } else {
+            return true
+        }
+    } catch (error) {
+        console.error(error.message);
+        return false
+    }
+}
+
 export async function getAssistantResponse(conversation: ChatMessage[], model: ModelType) {
     const endpoint = 'getAssistantResponse'
 
