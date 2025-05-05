@@ -19,22 +19,24 @@ const app = initializeApp(firebaseConfig)
 
 const db = getFirestore(app)
 
-export async function getNewConversationId() {
-    const docRef = doc(collection(db, "conversations"))
-    const userId = (await cookies()).get('userId')?.value
-    await setDoc(docRef, {
-        createdAt: serverTimestamp(),
-        userId,
-    })
-    return docRef.id
-}
-
-export async function saveConversationToFirestore(messages: ChatMessage[], docRefId: string) {
-    const docRef = doc(db, "conversations", docRefId)
-    await updateDoc(docRef, {
-        messages,
-        updatedAt: serverTimestamp()
-    })
+export async function handleSaveConversation(messages: ChatMessage[], docRefId: string | null) {
+    if (!docRefId) {
+        const docRef = doc(collection(db, "conversations"))
+        const userId = (await cookies()).get('userId')?.value
+        await setDoc(docRef, {
+            createdAt: serverTimestamp(),
+            userId,
+            messages
+        })
+        return docRef.id
+    } else {
+        const docRef = doc(db, "conversations", docRefId)
+        await updateDoc(docRef, {
+            messages,
+            updatedAt: serverTimestamp()
+        })
+        return docRefId
+    }
 }
 
 export async function handleUserLogin(email: string, password: string) {

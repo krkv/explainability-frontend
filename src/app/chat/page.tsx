@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import classNames from 'classnames';
-import { getNewConversationId, saveConversationToFirestore } from "@/lib/firebase"
+import { handleSaveConversation } from "@/lib/firebase"
 import { logout } from "@/actions/auth"
 import { getAssistantResponse, getBackendReady } from '@/actions/assistant'
 import { ChatMessage, ModelType } from '@/types/chat'
@@ -121,16 +121,13 @@ export default function Chat() {
 
     useEffect(() => {
         async function saveConversation() {
-            if (!docRefId) {
-                const id = await getNewConversationId()
-                setDocRefId(id)
-            }
-            if (messages.length > 1) {
-                await saveConversationToFirestore(messages.toReversed(), docRefId)
-            }
+            const id = await handleSaveConversation(messages.toReversed(), docRefId)
+            setDocRefId(id)
         }
-        saveConversation()
-    }, [messages, docRefId])
+        if (messages.length > 1 && loading === false) {
+            saveConversation()
+        }
+    }, [messages])
 
     function addUserMessage(formData) {
         const userMessage = formData.get('userMessage')
