@@ -71,13 +71,13 @@ export default function Chat() {
         async function checkBackend() {
             const t = setTimeout(() => {
                 return redirect('/chat')
-            }, 5000)
+            }, 3000)
             const ready = await getBackendReady()
             if (ready) {
                 clearTimeout(t)
-                setBackendReady(true)
+                return setBackendReady(true)
             } else {
-                setBackendReady(false)
+                return setBackendReady(false)
             }
         }
 
