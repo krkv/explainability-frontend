@@ -74,9 +74,8 @@ export default function Chat() {
             }, 5000)
             const ready = await getBackendReady()
             if (ready) {
-                setBackendReady(true)
                 clearTimeout(t)
-                return;
+                setBackendReady(true)
             } else {
                 setBackendReady(false)
             }
