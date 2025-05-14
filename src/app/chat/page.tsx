@@ -7,6 +7,7 @@ import { logout } from "@/actions/auth"
 import { getAssistantResponse, getBackendReady } from '@/actions/assistant'
 import { ChatMessage, ModelType } from '@/types/chat'
 import Image from 'next/image'
+import { redirect } from 'next/navigation'
 import assistantIcon from '@/assets/claire-b.png'
 import styles from '@/styles/chat.module.css'
 import loaders from '@/styles/loaders.module.css'
@@ -67,30 +68,23 @@ export default function Chat() {
     const [backendReady, setBackendReady] = useState(false)
 
     useEffect(() => {
-        let isCancelled = false
-
-        async function checkBackendWithRetry(retries = 10, delay = 3000) {
-            for (let attempt = 0; attempt <= retries; attempt++) {
-                if (isCancelled) return
-                const ready = await getBackendReady()
-                if (ready) {
-                    setBackendReady(true)
-                    return;
-                }
-                if (attempt < retries) {
-                    await new Promise(resolve => setTimeout(resolve, delay))
-                }
+        async function checkBackend() {
+            const t = setTimeout(() => {
+                return redirect('/chat')
+            }, 5000)
+            const ready = await getBackendReady()
+            if (ready) {
+                setBackendReady(true)
+                clearTimeout(t)
+                return;
+            } else {
+                setBackendReady(false)
             }
-            setBackendReady(false)
         }
 
         if (!backendReady) {
-            checkBackendWithRetry()
+            checkBackend()
         }
-
-        return () => {
-            isCancelled = true
-        };
     }, [backendReady])
 
     useEffect(() => {
