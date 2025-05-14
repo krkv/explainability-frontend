@@ -103,6 +103,9 @@
     color: #33415C;
     margin-right: 8px;
     cursor: pointer;
+    box-shadow: -6px 6px lightgray;
+    -webkit-box-shadow: -6px 6px lightgray;
+    -moz-box-shadow: -6px 6px lightgray;
 }
 
 .toolbar-button:last-child {
@@ -163,15 +166,17 @@
 }
 
 .demo-button {
-    background-color: #fff;
-    padding: 4px 8px;
-    border: 1px solid #33415C;
     font-family: 'Noto Sans', serif;
     color: #33415C;
-    margin: 4px;
     cursor: pointer;
     text-align: left;
     font-size: medium;
+    padding: 15px;
+    background-color: #e1eef2;
+    align-self: flex-start;
+    border-radius: 15px 15px 15px 0px;
+    border-width: 0;
+    margin: 0 5px 5px 0;
 }
 
 .demo-button-big {
@@ -237,9 +242,12 @@
     border: 3px solid #E1E5F2;
     outline: none;
     margin: 0 25px 0 0;
-    border-radius: 15px;
+    border-radius: 25px;
     resize: none;
     scrollbar-width: none;
+    box-shadow: -6px 6px lightgray;
+    -webkit-box-shadow: -6px 6px lightgray;
+    -moz-box-shadow: -6px 6px lightgray;
 }
 
 .chat-input:focus {
@@ -257,7 +265,10 @@
     font-family: 'Noto Sans', serif;
     font-size: large;
     font-weight: bold;
-    border-radius: 15px;
+    border-radius: 25px;
+    box-shadow: -6px 6px lightgray;
+    -webkit-box-shadow: -6px 6px lightgray;
+    -moz-box-shadow: -6px 6px lightgray;
 }
 
 .chat-button:disabled {
@@ -271,12 +282,11 @@
     font-family: 'Noto Sans', serif;
     font-size: large;
     font-weight: bold;
-    border-radius: 15px;
 }
 
 .message-user {
     align-self: flex-end;
-    padding: 25px;
+    padding: 15px;
     margin: 5px 25px;
     background-color: #022B3A;
     border-radius: 15px 15px 0px 15px;
@@ -291,7 +301,7 @@
 }
 
 .message-assistant {
-    padding: 25px;
+    padding: 15px;
     background-color: #E1E5F2;
     align-self: flex-start;
     border-radius: 15px 15px 15px 0px;
