@@ -1,7 +1,6 @@
 'use server'
 
 import { ChatMessage, ModelType } from "@/types/chat"
-import { redirect } from "next/navigation"
 
 const backendHost = process.env.BACKEND_HOST
 const backendPort = process.env.BACKEND_PORT
@@ -10,7 +9,7 @@ export async function getBackendReady() {
     const endpoint = 'ready'
 
     try {
-        let timeout = new Promise(function (resolve, reject) {
+        const timeout = new Promise(function (resolve, reject) {
             return setTimeout(function () {
                 reject('Timeout');
             }, 2000);
@@ -30,7 +29,8 @@ export async function getBackendReady() {
         } else {
             return false
         }
-    } catch (error) {
+    } catch (e) {
+        console.error(e)
         return false
     }
 }

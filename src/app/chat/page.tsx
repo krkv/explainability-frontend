@@ -80,7 +80,7 @@ export default function Chat() {
                 }
             }
             catch (e) {
-                console.log(e)
+                console.error(e)
             }
         }
 
@@ -123,7 +123,7 @@ export default function Chat() {
         if (messages.length > 1 && loading === false) {
             saveConversation()
         }
-    }, [messages])
+    }, [messages, docRefId, loading])
 
     function addUserMessage(formData) {
         const userMessage = formData.get('userMessage')
