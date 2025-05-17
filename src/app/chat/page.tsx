@@ -7,7 +7,6 @@ import { logout } from "@/actions/auth"
 import { getAssistantResponse, getBackendReady } from '@/actions/assistant'
 import { ChatMessage, ModelType } from '@/types/chat'
 import Image from 'next/image'
-import { redirect } from 'next/navigation'
 import assistantIcon from '@/assets/claire-b.png'
 import styles from '@/styles/chat.module.css'
 import loaders from '@/styles/loaders.module.css'
@@ -184,9 +183,9 @@ export default function Chat() {
                         </div>
                     </div>
                     <div>
+                        <button className={styles['toolbar-button']} onClick={toggleSidebar}>Examples</button>
                         <button className={classNames(styles['toolbar-button'], styles['red-button'])} onClick={resetConversation}>Reset</button>
                         <button className={classNames(styles['toolbar-button'], styles['red-button'])} onClick={handleLogout}>Logout</button>
-                        <button className={styles['toolbar-button']} onClick={toggleSidebar}>Examples</button>
                     </div>
                 </div>
                 <div className={styles['messages-container']}>
