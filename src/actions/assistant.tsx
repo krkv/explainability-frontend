@@ -1,6 +1,7 @@
 'use server'
 
 import { ChatMessage, ModelType } from "@/types/chat"
+import { redirect } from "next/navigation"
 
 const backendHost = process.env.BACKEND_HOST
 const backendPort = process.env.BACKEND_PORT
@@ -9,20 +10,27 @@ export async function getBackendReady() {
     const endpoint = 'ready'
 
     try {
-        const response = await fetch(`${backendHost}:${backendPort}/${endpoint}`, {
+        let timeout = new Promise(function (resolve, reject) {
+            return setTimeout(function () {
+                reject('Timeout');
+            }, 2000);
+        });
+
+        const response = fetch(`${backendHost}:${backendPort}/${endpoint}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
             }
         })
 
-        if (!response.ok) {
-            return false
-        } else {
+        const res = await Promise.race([response, timeout]) as globalThis.Response
+
+        if (res.ok) {
             return true
+        } else {
+            return false
         }
     } catch (error) {
-        console.error(error.message);
         return false
     }
 }

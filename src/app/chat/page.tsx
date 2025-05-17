@@ -69,15 +69,19 @@ export default function Chat() {
 
     useEffect(() => {
         async function checkBackend() {
-            const t = setTimeout(() => {
-                return redirect('/chat')
-            }, 3000)
-            const ready = await getBackendReady()
-            if (ready) {
-                clearTimeout(t)
-                return setBackendReady(true)
-            } else {
-                return setBackendReady(false)
+            try {
+                const backendReady = await getBackendReady()
+
+                if (backendReady) {
+                    setBackendReady(true)
+                } else {
+                    setTimeout(() => {
+                        checkBackend()
+                    }, 2000)
+                }
+            }
+            catch (e) {
+                console.log(e)
             }
         }
 
