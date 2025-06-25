@@ -5,9 +5,11 @@ import classNames from 'classnames';
 import { handleSaveConversation } from "@/lib/firebase"
 import { logout } from "@/actions/auth"
 import { getAssistantResponse, getBackendReady } from '@/actions/assistant'
-import { ChatMessage, ModelType } from '@/types/chat'
+import { ChatMessage, ModelType, UsecaseType } from '@/types/chat'
 import Image from 'next/image'
 import assistantIcon from '@/assets/claire-b.png'
+import heartIcon from '@/assets/heart-disease.png'
+import energyIcon from '@/assets/energy-consumption.png'
 import styles from '@/styles/chat.module.css'
 import loaders from '@/styles/loaders.module.css'
 
@@ -65,6 +67,7 @@ export default function Chat() {
     const [showSidebar, setShowSidebar] = useState(false)
     const [docRefId, setDocRefId] = useState(null)
     const [backendReady, setBackendReady] = useState(false)
+    const [usecase, setUsecase] = useState(null)
 
     useEffect(() => {
         async function checkBackend() {
@@ -94,7 +97,7 @@ export default function Chat() {
             const lastMessage = messages?.[0]
             if (lastMessage && lastMessage.role === 'user') {
                 const conversation = messages.toReversed()
-                const assistantResponse = await getAssistantResponse(conversation, model)
+                const assistantResponse = await getAssistantResponse(conversation, model, usecase)
                 const newAssistantMessages = []
                 if (assistantResponse.freeform_response) {
                     newAssistantMessages.push({
@@ -159,6 +162,15 @@ export default function Chat() {
 
     function handleLogout() {
         logout()
+    }
+
+    if (!usecase) {
+        return (
+            <div className={styles['page-container']}>
+                <a className={styles['usecase-link']} onClick={() => setUsecase(UsecaseType.Heart)}><Image src={heartIcon} alt="Assistant icon" width={50} height={50} />{UsecaseType.Heart}</a>
+                <a className={styles['usecase-link']} onClick={() => setUsecase(UsecaseType.Energy)}><Image src={energyIcon} alt="Assistant icon" width={50} height={50} />{UsecaseType.Energy}</a>
+            </div>
+        )
     }
 
     if (!backendReady) {

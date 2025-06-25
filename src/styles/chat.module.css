@@ -375,3 +375,22 @@
 .hidden {
     display: none;
 }
+
+.usecase-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    height: 100px;
+    margin: 10px;
+    padding: 20px;
+    border: 2px solid #f1f1f1;
+    background-color: #f1f1f1;
+    border-radius: 15px 15px 15px 0px;
+    font-family: 'Noto Sans', serif;
+    font-size: bold;
+    font-size: large;
+    color: #0077b6;
+    text-decoration: none;
+    cursor: pointer;
+}

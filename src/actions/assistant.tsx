@@ -1,6 +1,6 @@
 'use server'
 
-import { ChatMessage, ModelType } from "@/types/chat"
+import { ChatMessage, ModelType, UsecaseType } from "@/types/chat"
 
 const backendHost = process.env.BACKEND_HOST
 const backendPort = process.env.BACKEND_PORT
@@ -35,13 +35,14 @@ export async function getBackendReady() {
     }
 }
 
-export async function getAssistantResponse(conversation: ChatMessage[], model: ModelType) {
+export async function getAssistantResponse(conversation: ChatMessage[], model: ModelType, usecase: UsecaseType) {
     const endpoint = 'getAssistantResponse'
 
     try {
         const requestBody = {
             conversation: conversation,
-            model: model
+            model: model,
+            usecase: usecase
         }
 
         const response = await fetch(`${backendHost}:${backendPort}/${endpoint}`, {
