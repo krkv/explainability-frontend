@@ -1,24 +1,31 @@
+import { Suspense } from 'react'
+import { list } from '@vercel/blob'
 import styles from '@/styles/home.module.css'
-import { validateForm } from '@/actions/auth'
-import Image from 'next/image'
-import assistantIcon from '@/assets/claire-b.png'
-
-function AccessForm() {
-    return (
-        <form action={validateForm} className={styles['form-container']}>
-            <input name='email' type='email' className={styles['access-input']} placeholder='Your email'></input>
-            <input name='password' type='password' className={styles['access-input']} placeholder='Your password'></input>
-            <button className={styles['access-button']}>Demo Access</button>
-        </form>
-    )
-}
+import Navbar from '@/components/navbar'
 
 export default function HomePage() {
     return (
         <div className={styles['page-container']}>
-            <Image src={assistantIcon} alt="Assistant icon" width={64} height={64} />
-            <h1>Explainability Assistant</h1>
-            <AccessForm />
+            <Navbar />
+            <h2 className={styles['hero']}>A trustworthy companion for your machine learning applications</h2>
+            <Suspense fallback={<p>Loading video...</p>}>
+                <VideoComponent fileName="Explainability_Assistant_Demo.mp4" />
+            </Suspense>
         </div>
+    )
+}
+
+async function VideoComponent({ fileName }) {
+    const { blobs } = await list({
+        prefix: fileName,
+        limit: 1,
+    })
+    const { url } = blobs[0]
+
+    return (
+        <video width={768} height={432} controls preload="none" aria-label="Video player" poster='images/video-poster.png'>
+            <source src={url} type="video/mp4" />
+            Your browser does not support the video tag.
+        </video>
     )
 }

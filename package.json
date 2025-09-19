@@ -6,6 +6,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@vercel/blob": "^2.0.0",
     "classnames": "^2.5.1",
     "firebase": "^11.5.0",
     "jose": "^5.9.6",

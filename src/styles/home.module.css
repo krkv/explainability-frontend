@@ -1,55 +1,17 @@
 .page-container {
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.form-container {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    max-width: 400px;
-    padding: 20px;
-}
-
-.page-container h1 {
-    font-family: 'Noto Sans', serif;
+.hero {
+    max-width: 768px;
+    text-align: center;
     font-size: 2.5rem;
-    color: #1F7A8C;
-    margin: 32px 0;
-}
-
-.access-input,
-.access-input:focus {
-    padding: 16px;
-    margin: 16px 0 0 0;
-    font-size: large;
-    border: none;
-    border-bottom: 4px solid #1F7A8C;
-    outline: none;
     font-weight: bold;
-    font-family: 'Noto Sans', serif;
-}
-
-.access-button {
-    background-color: #1F7A8C;
-    border: none;
-    color: white;
-    padding: 16px;
-    text-decoration: none;
-    margin: 45px 0 0 0;
-    cursor: pointer;
-    font-family: 'Noto Sans', serif;
-    font-size: large;
-    font-weight: bold;
-}
-
-.page-container h1 {
-    font-family: 'Noto Sans', serif;
-    font-size: 2rem;
-    color: #1F7A8C;
-    margin: 32px 0 0 0;
+    color: #0077b6;
+    margin: 3rem 0;
 }
