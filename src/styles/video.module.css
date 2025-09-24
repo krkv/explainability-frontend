@@ -1,0 +1,15 @@
+.video-section {
+    width: 100%;
+    background: #212121;
+}
+
+.video-container {
+    width: 100%;
+    max-width: 768px;
+    margin: 5rem auto 4.5rem;
+}
+
+.video-container video {
+    width: 100%;
+    height: auto;
+}

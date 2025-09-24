@@ -4,14 +4,41 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
 }
 
 .hero {
     max-width: 768px;
     text-align: center;
     font-size: 2.5rem;
-    font-weight: bold;
+    font-weight: 700;
     color: #0077b6;
-    margin: 3rem 0;
+    margin: 3rem 0 4rem;
+}
+
+.text {
+    max-width: 768px;
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: #333;
+    margin: 4rem 0;
+    text-align: justify;
+}
+
+.logo-row {
+    width: 100%;
+    background-color: #0077b6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 4rem 0;
+    margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+    .hero {
+        font-size: 2rem;
+        margin: 2rem 1rem;
+    }
 }
