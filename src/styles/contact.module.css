@@ -13,36 +13,43 @@
     padding: 16px;
     font-family: 'Noto Sans', serif;
     font-size: large;
-    border: 3px solid #E1E5F2;
+    border: 2px solid var(--celadon);
     outline: none;
     margin: 0 25px 0 0;
     border-radius: 25px;
     resize: none;
     scrollbar-width: none;
-    box-shadow: -6px 6px lightgray;
-    -webkit-box-shadow: -6px 6px lightgray;
-    -moz-box-shadow: -6px 6px lightgray;
+    box-shadow: -6px 6px #ccc;
+    -webkit-box-shadow: -6px 6px #ccc;
+    -moz-box-shadow: -6px 6px #ccc;
 }
 
-.contact-form input:focus {
-    border: 3px solid #ccc;
+.contact-form input:focus,
+.contact-form textarea:focus {
+    border: 2px solid #ccc;
 }
 
 .contact-form button {
-    background-color: #1F7A8C;
+    background-color: var(--zomp);
     border: none;
     color: white;
     padding: 16px 32px;
     text-decoration: none;
+    border: 2px solid var(--zomp);
     margin: 0;
     cursor: pointer;
     font-family: 'Noto Sans', serif;
     font-size: large;
     font-weight: bold;
     border-radius: 25px;
-    box-shadow: -6px 6px lightgray;
-    -webkit-box-shadow: -6px 6px lightgray;
-    -moz-box-shadow: -6px 6px lightgray;
+    box-shadow: -6px 6px var(--celadon);
+    -webkit-box-shadow: -6px 6px var(--celadon);
+    -moz-box-shadow: -6px 6px var(--celadon);
+}
+
+.contact-form button:hover {
+    background-color: #fff;
+    color: var(--zomp)
 }
 
 .success-message {

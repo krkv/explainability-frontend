@@ -12,7 +12,7 @@
     text-align: center;
     font-size: 2.5rem;
     font-weight: 700;
-    color: #0077b6;
+    color: var(--denim);
     margin: 3rem 0 4rem;
 }
 
@@ -20,7 +20,7 @@
     max-width: 768px;
     font-size: 1.2rem;
     line-height: 1.6;
-    color: #333;
+    color: var(--eerie-black);
     margin: 4rem 0;
     text-align: justify;
 }
@@ -28,7 +28,7 @@
 .home-heading {
     font-weight: 700;
     font-size: 1.5rem;
-    color: #0077b6;
+    color: var(--denim);
     margin: 0;
     padding: 0;
 }

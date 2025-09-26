@@ -6,3 +6,11 @@ body {
 * {
     box-sizing: border-box;
 }
+
+:root {
+    --eerie-black: #212121ff;
+    --zomp: #439a86ff;
+    --celadon: #bcd8c1ff;
+    --flax: #e9d985ff;
+    --denim: #2e5eaaff;
+}

@@ -14,7 +14,7 @@
 
 .logo-row {
     width: 100%;
-    background-color: #0077b6;
+    background-color: var(--denim);
     display: flex;
     flex-direction: column;
     justify-content: center;

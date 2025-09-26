@@ -1,6 +1,6 @@
 .video-section {
     width: 100%;
-    background: #212121;
+    background: var(--eerie-black);
 }
 
 .video-container {
