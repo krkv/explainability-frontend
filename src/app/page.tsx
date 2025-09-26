@@ -19,7 +19,7 @@ export default function HomePage() {
             <Navbar />
             <h2 className={classNames(styles['hero'], sansation.className)}>A trustworthy companion for your Machine Learning applications</h2>
             <Suspense fallback={<p>Loading video...</p>}>
-                <Video fileName="Explainability_Assistant_Demo.mp4" />
+                <Video fileName="/demo/video.mp4" />
             </Suspense>
             <p className={styles['text']}>Explainability Assistant is a conversational AI agent that helps professionals to explore
                 and interpret their data and Machine Learning predictions. It can be applied
