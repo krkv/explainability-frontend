@@ -7,8 +7,55 @@
 }
 
 .footer-text {
-    max-width: 768px;
     font-size: 0.8rem;
     color: #333;
     text-align: center;
+}
+
+.logo-row {
+    width: 100%;
+    background-color: #0077b6;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+}
+
+.logo-row a {
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+}
+
+.logo-text {
+    color: #fff;
+    font-size: 1.3rem;
+    text-align: center;
+    max-width: 768px;
+    padding: 4rem 1rem 0 1rem;
+    margin: 0;
+}
+
+.logos {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 4rem 0;
+    margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+    .logo-text {
+        font-size: 1rem;
+        padding: 2rem 1rem 0 1rem;
+    }
+
+    .logos {
+        flex-direction: column;
+        padding: 2rem 0;
+        gap: 1rem;
+    }
 }

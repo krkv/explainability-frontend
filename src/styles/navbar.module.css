@@ -71,6 +71,10 @@
 }
 
 @media screen and (max-width: 768px) {
+    .navbar-container {
+        position: static;
+    }
+
     .navbar {
         flex-direction: column;
     }

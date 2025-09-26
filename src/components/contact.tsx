@@ -19,7 +19,7 @@ export default function ContactForm() {
             <input id="email" type="email" name="email" required placeholder="Your email" />
             <ValidationError prefix="Email" field="email" errors={state.errors} />
             <label htmlFor="message" hidden>Message</label>
-            <textarea id="message" name="message" required placeholder="Please describe your request here" />
+            <textarea id="message" rows={5} name="message" required placeholder="Please describe your request" />
             <ValidationError prefix="Message" field="message" errors={state.errors} />
             <button type="submit" disabled={state.submitting}>
                 Submit

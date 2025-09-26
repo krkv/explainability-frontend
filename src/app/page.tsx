@@ -1,13 +1,11 @@
 import { Suspense } from 'react'
 import { Sansation } from 'next/font/google'
-import Image from 'next/image'
 import classNames from 'classnames'
 import styles from '@/styles/home.module.css'
 import Navbar from '@/components/navbar'
 import Video from '@/components/video'
 import Footer from '@/components/footer'
-import utlogo from '@/assets/ut-logo.png'
-import trustailogo from '@/assets/trust-ai-logo.png'
+
 import ContactForm from '@/components/contact'
 
 const sansation = Sansation({
@@ -52,14 +50,6 @@ export default function HomePage() {
                 and show you how Explainability Assistant can be integrated into your workflow.
             </p>
             <ContactForm />
-            <div className={styles['logo-row']}>
-                <a href="https://ut.ee" title="University of Tartu" target="_blank" rel="noopener noreferrer">
-                    <Image width={400} height={54} src={utlogo} alt="UT Logo" />
-                </a>
-                <a href="https://trustai.eu" title="Trust AI" target="_blank" rel="noopener noreferrer">
-                    <Image width={200} height={54} src={trustailogo} alt="Trust AI Logo" />
-                </a>
-            </div>
             <Footer />
         </div>
     )
