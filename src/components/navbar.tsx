@@ -20,7 +20,7 @@ export default function Navbar() {
 
                 <div className={styles['nav-section']}>
                     <a href="/login" className={classNames(styles['navbar-button'], styles['navbar-button-a'])}>Sign in</a>
-                    <a href="mailto:demo@explainabilityassistant.com" className={styles['navbar-button']}>Request a demo</a>
+                    <a href="#request-demo" className={styles['navbar-button']}>Request a demo</a>
                 </div>
             </nav>
         </div>

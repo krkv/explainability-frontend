@@ -25,6 +25,14 @@
     text-align: justify;
 }
 
+.home-heading {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #0077b6;
+    margin: 0;
+    padding: 0;
+}
+
 .logo-row {
     width: 100%;
     background-color: #0077b6;
@@ -36,9 +44,26 @@
     margin: 0;
 }
 
+.logo-row a {
+    display: inline-block;
+    text-decoration: none;
+    border: none;
+}
+
 @media screen and (max-width: 768px) {
     .hero {
         font-size: 2rem;
         margin: 2rem 1rem;
+    }
+
+    .logo-row {
+        flex-direction: column;
+        padding: 2rem 0;
+        gap: 1rem;
+    }
+
+    .text {
+        margin: 2rem 1rem;
+        font-size: 1rem;
     }
 }
