@@ -5,6 +5,7 @@ import classNames from 'classnames'
 import styles from '@/styles/login.module.css'
 import { validateForm as validateFormAction } from '@/actions/auth'
 import Image from 'next/image'
+import Link from 'next/link'
 import assistantIcon from '@/assets/claire-b.png'
 import { useState } from 'react'
 
@@ -52,7 +53,7 @@ function AccessForm() {
             formData.append('password', password)
             
             await validateFormAction(formData)
-        } catch (error) {
+        } catch {
             setErrors({ general: 'Invalid credentials. Please check your email and password.' })
         } finally {
             setIsLoading(false)
@@ -109,7 +110,7 @@ function AccessForm() {
                 {isLoading ? 'Signing in...' : 'Access Demo'}
             </button>
             
-            <a href="/#contact" className={styles['request-access-button']}>Request Access</a>
+            <Link href="/#contact" className={styles['request-access-button']}>Request Access</Link>
         </form>
     )
 }

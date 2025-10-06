@@ -39,7 +39,7 @@ export default function Navbar() {
                     <a href="#benefits" className={styles['nav-link']}>Benefits</a>
                     <a href="#presentation" className={styles['nav-link']}>Presentation</a>
                     <a href="#how-it-works" className={styles['nav-link']}>How it works</a>
-                    <a href="/login" className={classNames(styles['navbar-button'], styles['navbar-button-a'])}>Sign in</a>
+                    <Link href="/login" className={classNames(styles['navbar-button'], styles['navbar-button-a'])}>Sign in</Link>
                     <a href="#contact" className={styles['navbar-button']}>Request access</a>
                 </div>
 
@@ -76,9 +76,9 @@ export default function Navbar() {
                         FAQ
                     </a>
                     <div className={styles['mobile-buttons']}>
-                        <a href="/login" className={classNames(styles['mobile-button'], styles['mobile-button-primary'])} onClick={closeMenu}>
+                        <Link href="/login" className={classNames(styles['mobile-button'], styles['mobile-button-primary'])} onClick={closeMenu}>
                             Sign in
-                        </a>
+                        </Link>
                         <a href="#contact" className={classNames(styles['mobile-button'], styles['mobile-button-secondary'])} onClick={closeMenu}>
                             Request access
                         </a>
