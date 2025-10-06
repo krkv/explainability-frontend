@@ -35,11 +35,11 @@ export default function Navbar() {
 
                 {/* Desktop Navigation */}
                 <div className={styles['nav-links']}>
-                    <a href="#demo" className={styles['nav-link']}>Demo</a>
+                    <a href="#presentation" className={styles['nav-link']}>Presentation</a>
                     <a href="#how-it-works" className={styles['nav-link']}>How it works</a>
-                    <a href="#request-demo" className={styles['nav-link']}>Contact</a>
+                    <a href="#contact" className={styles['nav-link']}>Contact</a>
                     <a href="/login" className={classNames(styles['navbar-button'], styles['navbar-button-a'])}>Sign in</a>
-                    <a href="#request-demo" className={styles['navbar-button']}>Request access</a>
+                    <a href="#contact" className={styles['navbar-button']}>Request access</a>
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -59,20 +59,20 @@ export default function Navbar() {
             {/* Mobile Menu */}
             <div className={classNames(styles['mobile-menu'], { [styles['open']]: isMenuOpen })}>
                 <div className={styles['mobile-menu-content']}>
-                    <a href="#demo" className={styles['mobile-nav-link']} onClick={closeMenu}>
-                        Demo
+                    <a href="#presentation" className={styles['mobile-nav-link']} onClick={closeMenu}>
+                        Presentation
                     </a>
                     <a href="#how-it-works" className={styles['mobile-nav-link']} onClick={closeMenu}>
                         How it works
                     </a>
-                    <a href="#request-demo" className={styles['mobile-nav-link']} onClick={closeMenu}>
+                    <a href="#contact" className={styles['mobile-nav-link']} onClick={closeMenu}>
                         Contact
                     </a>
                     <div className={styles['mobile-buttons']}>
                         <a href="/login" className={classNames(styles['mobile-button'], styles['mobile-button-primary'])} onClick={closeMenu}>
                             Sign in
                         </a>
-                        <a href="#request-demo" className={classNames(styles['mobile-button'], styles['mobile-button-secondary'])} onClick={closeMenu}>
+                        <a href="#contact" className={classNames(styles['mobile-button'], styles['mobile-button-secondary'])} onClick={closeMenu}>
                             Request access
                         </a>
                     </div>
