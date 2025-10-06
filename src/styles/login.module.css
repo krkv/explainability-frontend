@@ -101,6 +101,34 @@
     transform: translateY(0);
 }
 
+.request-access-button {
+    background: transparent;
+    color: var(--denim);
+    padding: 1rem 2rem;
+    border: 2px solid var(--denim);
+    border-radius: 12px;
+    text-decoration: none;
+    margin: 1rem 0 0 0;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-align: center;
+    display: block;
+}
+
+.request-access-button:hover {
+    background: var(--denim);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 94, 170, 0.3);
+}
+
+.request-access-button:active {
+    transform: translateY(0);
+}
+
 /* Responsive Design */
 @media screen and (max-width: 768px) {
     .page-title {
@@ -118,6 +146,11 @@
     }
     
     .access-button {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
+    
+    .request-access-button {
         padding: 0.875rem 1.5rem;
         font-size: 1rem;
     }

@@ -15,7 +15,8 @@ function AccessForm() {
         <form action={validateForm} className={styles['form-container']}>
             <input name='email' type='email' className={styles['access-input']} placeholder='Your email'></input>
             <input name='password' type='password' className={styles['access-input']} placeholder='Your password'></input>
-            <button className={styles['access-button']}>Access Demo</button>
+            <button type="submit" className={styles['access-button']}>Access Demo</button>
+            <a href="/#contact" className={styles['request-access-button']}>Request Access</a>
         </form>
     )
 }
