@@ -1,6 +1,7 @@
 "use client"
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { Sansation } from 'next/font/google'
 import styles from '@/styles/navbar.module.css'
 import chatIcon from '@/assets/chat.png'
@@ -28,16 +29,16 @@ export default function Navbar() {
             <nav className={styles['navbar']}>
                 <div className={styles['nav-section']}>
                     <Image className={styles['logo']} src={chatIcon} alt="Logo" width={40} height={40} />
-                    <a href="/" className={classNames(styles['header'], sansation.className)}>
+                    <Link href="/" className={classNames(styles['header'], sansation.className)}>
                         Explainability Assistant
-                    </a>
+                    </Link>
                 </div>
 
                 {/* Desktop Navigation */}
                 <div className={styles['nav-links']}>
+                    <a href="#benefits" className={styles['nav-link']}>Benefits</a>
                     <a href="#presentation" className={styles['nav-link']}>Presentation</a>
                     <a href="#how-it-works" className={styles['nav-link']}>How it works</a>
-                    <a href="#contact" className={styles['nav-link']}>Contact</a>
                     <a href="/login" className={classNames(styles['navbar-button'], styles['navbar-button-a'])}>Sign in</a>
                     <a href="#contact" className={styles['navbar-button']}>Request access</a>
                 </div>
@@ -59,14 +60,20 @@ export default function Navbar() {
             {/* Mobile Menu */}
             <div className={classNames(styles['mobile-menu'], { [styles['open']]: isMenuOpen })}>
                 <div className={styles['mobile-menu-content']}>
+                    <a href="#benefits" className={styles['mobile-nav-link']} onClick={closeMenu}>
+                        Benefits
+                    </a>
+                    <a href="#usecases" className={styles['mobile-nav-link']} onClick={closeMenu}>
+                        Use Cases
+                    </a>
                     <a href="#presentation" className={styles['mobile-nav-link']} onClick={closeMenu}>
                         Presentation
                     </a>
                     <a href="#how-it-works" className={styles['mobile-nav-link']} onClick={closeMenu}>
                         How it works
                     </a>
-                    <a href="#contact" className={styles['mobile-nav-link']} onClick={closeMenu}>
-                        Contact
+                    <a href="#faq" className={styles['mobile-nav-link']} onClick={closeMenu}>
+                        FAQ
                     </a>
                     <div className={styles['mobile-buttons']}>
                         <a href="/login" className={classNames(styles['mobile-button'], styles['mobile-button-primary'])} onClick={closeMenu}>

@@ -29,13 +29,13 @@ export default function HomePage() {
                     </p>
                     <div className={styles['hero-actions']}>
                         <a href="#contact" className={styles['cta-primary']}>Request access</a>
-                        <a href="#demo" className={styles['cta-secondary']}>Watch presentation</a>
+                        <a href="#presentation" className={styles['cta-secondary']}>Watch presentation</a>
                     </div>
                 </div>
             </section>
 
             {/* Benefits Section */}
-            <section className={styles['benefits-section']}>
+            <section className={styles['benefits-section']} id="benefits">
                 <div className={styles['benefits-content']}>
                     <h2 className={classNames(styles['section-title'], sansation.className)}>Why choose Explainability Assistant?</h2>
                     <div className={styles['benefits-grid']}>
@@ -65,7 +65,7 @@ export default function HomePage() {
             </section>
 
             {/* Use Cases Section */}
-            <section className={styles['usecases-section']}>
+            <section className={styles['usecases-section']} id="usecases">
                 <div className={styles['usecases-content']}>
                     <h2 className={classNames(styles['section-title'], sansation.className)}>Example use cases</h2>
                     <div className={styles['usecases-grid']}>
@@ -76,7 +76,7 @@ export default function HomePage() {
                                 Explain medical diagnosis predictions, understand risk factors, and ensure regulatory compliance.
                             </p>
                             <div className={styles['usecase-example']}>
-                                <strong>Example:</strong> "Why did the model predict high risk for patient ID 123?"
+                                <strong>Example:</strong> &ldquo;Why did the model predict high risk for patient ID 123?&rdquo;
                             </div>
                         </div>
                         <div className={styles['usecase-card']}>
@@ -86,7 +86,7 @@ export default function HomePage() {
                                 Optimize energy consumption predictions, identify key factors, and improve efficiency.
                             </p>
                             <div className={styles['usecase-example']}>
-                                <strong>Example:</strong> "What would happen if outdoor temperature increased by 5°C?"
+                                <strong>Example:</strong> &ldquo;What would happen if outdoor temperature increased by 5°C?&rdquo;
                             </div>
                         </div>
                         <div className={styles['usecase-card']}>
@@ -96,7 +96,7 @@ export default function HomePage() {
                                 Understand traffic predictions, optimize routes, and improve safety models.
                             </p>
                             <div className={styles['usecase-example']}>
-                                <strong>Example:</strong> "Show me the most important features for delay prediction."
+                                <strong>Example:</strong> &ldquo;Show me the most important features for delay prediction.&rdquo;
                             </div>
                         </div>
                     </div>
@@ -177,7 +177,7 @@ export default function HomePage() {
             </section>
 
             {/* FAQ Section */}
-            <section className={styles['faq-section']}>
+            <section className={styles['faq-section']} id="faq">
                 <div className={styles['faq-content']}>
                     <h2 className={classNames(styles['section-title'], sansation.className)}>Frequently Asked Questions</h2>
                     <div className={styles['faq-grid']}>
@@ -216,7 +216,7 @@ export default function HomePage() {
                     <p className={styles['cta-description']}>
                         Join researchers and practitioners who are already using Explainability Assistant to build trust in their ML models. 
                         You can get access to an interactive demo or request a consultation to see how it can help your organization.
-                    </p>
+            </p>
             <ContactForm />
                 </div>
             </section>
