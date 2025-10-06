@@ -5,6 +5,20 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    background: linear-gradient(135deg, var(--denim) 0%, var(--zomp) 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.page-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
 }
 
 .form-container {
@@ -12,44 +26,109 @@
     flex-direction: column;
     width: 100%;
     max-width: 400px;
-    padding: 20px;
+    padding: 2.5rem;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
 }
 
-.page-container h1 {
-    font-family: 'Noto Sans', serif;
+.form-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.page-title {
     font-size: 2.5rem;
-    color: #1F7A8C;
-    margin: 32px 0;
+    font-weight: 700;
+    color: white;
+    margin: 2rem 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 1;
 }
 
-.access-input,
-.access-input:focus {
-    padding: 16px;
-    margin: 16px 0 0 0;
-    font-size: large;
-    border: none;
-    border-bottom: 4px solid #1F7A8C;
+.access-input {
+    padding: 1rem 1.25rem;
+    margin: 1rem 0 0 0;
+    font-size: 1rem;
+    border: 2px solid rgba(46, 94, 170, 0.2);
+    border-radius: 12px;
     outline: none;
-    font-weight: bold;
-    font-family: 'Noto Sans', serif;
+    font-weight: 400;
+    font-family: inherit;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    color: var(--eerie-black);
+}
+
+.access-input:focus {
+    border-color: var(--denim);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(46, 94, 170, 0.1);
+}
+
+.access-input::placeholder {
+    color: rgba(33, 33, 33, 0.6);
+    font-weight: 400;
 }
 
 .access-button {
-    background-color: #1F7A8C;
+    background: linear-gradient(135deg, var(--denim) 0%, var(--zomp) 100%);
     border: none;
     color: white;
-    padding: 16px;
+    padding: 1rem 2rem;
+    border-radius: 12px;
     text-decoration: none;
-    margin: 45px 0 0 0;
+    margin: 2rem 0 0 0;
     cursor: pointer;
-    font-family: 'Noto Sans', serif;
-    font-size: large;
-    font-weight: bold;
+    font-family: inherit;
+    font-size: 1.1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(46, 94, 170, 0.3);
 }
 
-.page-container h1 {
-    font-family: 'Noto Sans', serif;
-    font-size: 2rem;
-    color: #1F7A8C;
-    margin: 32px 0 0 0;
+.access-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(46, 94, 170, 0.4);
+}
+
+.access-button:active {
+    transform: translateY(0);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .page-title {
+        font-size: 2rem;
+    }
+    
+    .form-container {
+        margin: 0 1rem;
+        padding: 2rem;
+    }
+    
+    .access-input {
+        padding: 0.875rem 1rem;
+        font-size: 0.95rem;
+    }
+    
+    .access-button {
+        padding: 0.875rem 1.5rem;
+        font-size: 1rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .page-title {
+        font-size: 1.8rem;
+    }
+    
+    .form-container {
+        padding: 1.5rem;
+    }
 }
