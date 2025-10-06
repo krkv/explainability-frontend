@@ -12,6 +12,8 @@ export async function validateForm(f: FormData) {
     if (user) {
         await createSession(user.uid)
         redirect('/chat')
+    } else {
+        throw new Error('Invalid credentials')
     }
 }
 

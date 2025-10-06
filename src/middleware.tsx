@@ -4,13 +4,15 @@ import { cookies } from 'next/headers'
 
 // 1. Specify protected and public routes
 const protectedRoutes = ['/chat']
-const publicRoutes = ['/']
+const loginRoute = '/login'
+const publicRoutes = ['/', '/login']
 
 export default async function middleware(req: NextRequest) {
     // 2. Check if the current route is protected or public
     const path = req.nextUrl.pathname
     const isProtectedRoute = protectedRoutes.includes(path)
     const isPublicRoute = publicRoutes.includes(path)
+    const isLoginRoute = path === loginRoute
 
     // 3. Decrypt the session from the cookie
     const cookie = (await cookies()).get('session')?.value
@@ -36,11 +38,11 @@ export default async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL('/', req.nextUrl))
     }
 
-    // 5. Redirect to /chat if the user is authenticated
+    // 5. Redirect from /login to /chat if the user is authenticated
     if (
-        isPublicRoute &&
+        isLoginRoute &&
         session?.userId &&
-        !req.nextUrl.pathname.startsWith('/chat')
+        req.nextUrl.pathname.startsWith('/login')
     ) {
         return NextResponse.redirect(new URL('/chat', req.nextUrl))
     }
