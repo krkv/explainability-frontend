@@ -41,21 +41,21 @@ export default function HomePage() {
                     <div className={styles['benefits-grid']}>
                         <div className={styles['benefit-card']}>
                             <div className={styles['benefit-icon']}>💬</div>
-                            <h3 className={classNames(styles['benefit-title'], sansation.className)}>Natural Conversation</h3>
+                            <h3 className={classNames(styles['benefit-title'], sansation.className)}>Natural conversation</h3>
                             <p className={styles['benefit-description']}>
                                 Ask questions in plain English or other languages. No need to learn complex APIs or write code to understand your models.
                             </p>
                         </div>
                         <div className={styles['benefit-card']}>
                             <div className={styles['benefit-icon']}>🔍</div>
-                            <h3 className={classNames(styles['benefit-title'], sansation.className)}>Deep Insights</h3>
+                            <h3 className={classNames(styles['benefit-title'], sansation.className)}>Deep insights</h3>
                             <p className={styles['benefit-description']}>
                                 Get feature importance, counterfactual explanations, and what-if scenarios to understand model behavior.
                             </p>
                         </div>
                         <div className={styles['benefit-card']}>
                             <div className={styles['benefit-icon']}>🛡️</div>
-                            <h3 className={classNames(styles['benefit-title'], sansation.className)}>Enterprise Ready</h3>
+                            <h3 className={classNames(styles['benefit-title'], sansation.className)}>Enterprise ready</h3>
                             <p className={styles['benefit-description']}>
                                 Deploy on-premises or in your cloud. Your data never leaves your infrastructure. You are in control of all AI providers and your data.
                             </p>
@@ -113,6 +113,36 @@ export default function HomePage() {
                     <Suspense fallback={<div className={styles['video-loading']}>Loading video...</div>}>
                 <Video fileName="https://github.com/krkv/explainability-frontend/raw/refs/heads/main/public/demo/video.mp4" />
             </Suspense>
+                </div>
+            </section>
+
+            {/* Architecture & Privacy Section */}
+            <section className={styles['architecture-section']} id="architecture">
+                <div className={styles['architecture-content']}>
+                    <h2 className={classNames(styles['section-title'], sansation.className)}>Built for privacy & reliability</h2>
+                    <div className={styles['architecture-grid']}>
+                        <div className={styles['architecture-card']}>
+                            <div className={styles['architecture-icon']}>🔒</div>
+                            <h3 className={classNames(styles['architecture-title'], sansation.className)}>Your data never leaves your infrastructure</h3>
+                            <p className={styles['architecture-description']}>
+                                Deploy on-premises or in your private cloud. Complete privacy with full control over all AI providers and no external data transmission.
+                            </p>
+                        </div>
+                        <div className={styles['architecture-card']}>
+                            <div className={styles['architecture-icon']}>⚙️</div>
+                            <h3 className={classNames(styles['architecture-title'], sansation.className)}>Function-based architecture</h3>
+                            <p className={styles['architecture-description']}>
+                                Pre-defined functions prevent AI hallucinations and ensure deterministic, reliable explanations. JSON-specified functions with Python back-end execution.
+                            </p>
+                        </div>
+                        <div className={styles['architecture-card']}>
+                            <div className={styles['architecture-icon']}>🔌</div>
+                            <h3 className={classNames(styles['architecture-title'], sansation.className)}>REST API integration</h3>
+                            <p className={styles['architecture-description']}>
+                                Easy integration with existing systems. Standard REST API allows multiple front-ends and seamless integration with your current workflow.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -179,7 +209,7 @@ export default function HomePage() {
             {/* FAQ Section */}
             <section className={styles['faq-section']} id="faq">
                 <div className={styles['faq-content']}>
-                    <h2 className={classNames(styles['section-title'], sansation.className)}>Frequently Asked Questions</h2>
+                    <h2 className={classNames(styles['section-title'], sansation.className)}>Frequently asked questions</h2>
                     <div className={styles['faq-grid']}>
                         <div className={styles['faq-item']}>
                             <h3 className={classNames(styles['faq-question'], sansation.className)}>What data formats are supported?</h3>

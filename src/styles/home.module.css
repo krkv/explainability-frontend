@@ -515,3 +515,58 @@
         padding: 1.5rem 1rem;
     }
 }
+
+/* Architecture Section */
+.architecture-section {
+    width: 100%;
+    padding: 6rem 0;
+    background: #f8f9fa;
+}
+
+.architecture-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.architecture-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.architecture-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.architecture-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.architecture-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.architecture-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--denim);
+    margin: 0 0 1rem 0;
+}
+
+.architecture-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--eerie-black);
+    margin: 0;
+}
