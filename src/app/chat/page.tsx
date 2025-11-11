@@ -228,6 +228,7 @@ export default function Chat() {
                             <a className={styles['toolbar-button']}>Model: {model}</a>
                             <div className={showModelDropdown ? styles['dropdown-content'] : styles['hidden']} onClick={onSelectModel}>
                                 <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Gemini}</a>
+                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.GeminiFlash25}</a>
                                 <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Llama}</a>
                             </div>
                         </div>
