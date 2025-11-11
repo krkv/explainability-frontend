@@ -12,6 +12,8 @@ import energyIcon from '@/assets/energy-consumption.png'
 import styles from '@/styles/chat.module.css'
 import loaders from '@/styles/loaders.module.css'
 
+const MAX_USER_MESSAGES = 25
+
 const welcomeMessage: ChatMessage = {
     role: 'assistant',
     content: "<p>Hello! I'm Claire, your explainability assistant. I am here to help you better understand your data, models and predictions, and more.</p>\
@@ -155,9 +157,13 @@ export default function Study() {
         }
     }, [messages, docRefId, loading, studyUserId])
 
+    function getUserMessageCount() {
+        return messages.filter(msg => msg.role === 'user').length
+    }
+
     function addUserMessage(formData) {
         const userMessage = formData.get('userMessage')
-        if (userMessage !== '') {
+        if (userMessage !== '' && getUserMessageCount() < MAX_USER_MESSAGES) {
             setMessages([{ role: 'user', content: userMessage }, ...messages])
             setLoading(true)
         }
@@ -183,8 +189,10 @@ export default function Study() {
 
     function handleDemoButtonClick(event) {
         const userMessage = event.target.innerText
-        setMessages([{ role: 'user', content: userMessage }, ...messages])
-        setLoading(true)
+        if (getUserMessageCount() < MAX_USER_MESSAGES) {
+            setMessages([{ role: 'user', content: userMessage }, ...messages])
+            setLoading(true)
+        }
     }
 
     function getDemoMessages() {
@@ -236,8 +244,15 @@ export default function Study() {
                     {formatMessages(messages)}
                 </div>
                 <form action={addUserMessage} className={styles['chat-footer']}>
-                    <input name='userMessage' className={styles['chat-input']} placeholder="Type your message here..."></input>
-                    <button className={styles['chat-button']} disabled={loading}>Send</button>
+                    <input 
+                        name='userMessage' 
+                        className={styles['chat-input']} 
+                        placeholder={getUserMessageCount() >= MAX_USER_MESSAGES 
+                            ? `You have reached the message limit.`
+                            : "Type your message here..."} 
+                        disabled={getUserMessageCount() >= MAX_USER_MESSAGES || loading}
+                    ></input>
+                    <button className={styles['chat-button']} disabled={loading || getUserMessageCount() >= MAX_USER_MESSAGES}>Send</button>
                 </form>
             </div>
             <div className={showSidebar ? styles['demo-container'] : styles['hidden']}>
@@ -245,7 +260,7 @@ export default function Study() {
                 <p>You can try the examples below to see how the model responds to different questions:</p>
                 <ul>
                     {getDemoMessages().map((message, index) => (
-                        <li key={index}><button key={index} className={classNames(styles['demo-button'])} onClick={handleDemoButtonClick} disabled={loading}>{message}</button></li>
+                        <li key={index}><button key={index} className={classNames(styles['demo-button'])} onClick={handleDemoButtonClick} disabled={loading || getUserMessageCount() >= MAX_USER_MESSAGES}>{message}</button></li>
                     ))}
                 </ul>
             </div>
