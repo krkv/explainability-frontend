@@ -95,7 +95,7 @@ export default function Study() {
     const [showSidebar, setShowSidebar] = useState(false)
     const [docRefId, setDocRefId] = useState(null)
     const [backendReady, setBackendReady] = useState(false)
-    const [usecase, setUsecase] = useState(null)
+    const [usecase, setUsecase] = useState(UsecaseType.Energy)
     const [studyUserId] = useState(() => `study-${Date.now()}`)
 
     useEffect(() => {
