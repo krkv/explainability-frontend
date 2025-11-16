@@ -1,6 +1,8 @@
 export interface ChatMessage {
     role: "user" | "assistant"
     content: string
+    isFunctionCall?: boolean
+    isThinking?: boolean
 }
 
 export enum ModelType {

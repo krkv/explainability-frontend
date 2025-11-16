@@ -313,6 +313,58 @@
     margin-left: 50px;
 }
 
+.message-thinking {
+    padding: 15px;
+    background-color: #F5F5F5;
+    align-self: flex-start;
+    border-radius: 15px 15px 15px 0px;
+    margin: 0px;
+    overflow-x: auto;
+    opacity: 0.85;
+    font-style: italic;
+    border: 0;
+}
+
+.message-thinking.message-assistant-padded {
+    margin-left: 50px;
+}
+
+.message-thinking p {
+    margin: 0;
+    color: #666;
+}
+
+.message-function-call {
+    padding: 15px;
+    background-color: #FFF9E6;
+    align-self: flex-start;
+    border-radius: 15px 15px 15px 0px;
+    margin: 0px;
+    overflow-x: auto;
+    border: 0;
+    opacity: 0.85;
+}
+
+.message-function-call.message-assistant-padded {
+    margin-left: 50px;
+}
+
+.message-function-call code {
+    background-color: #fff;
+    color: #B8860B;
+    padding: 4px 8px;
+    border-radius: 5px;
+    font-size: 1.1em;
+    font-family: monospace;
+    font-weight: bold;
+    margin: 0 4px;
+    border: 1px solid #FFD700;
+}
+
+.message-function-call p {
+    margin: 0;
+}
+
 .message-assistant table {
     border-collapse: collapse;
     border-width: 0px;

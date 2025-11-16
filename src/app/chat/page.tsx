@@ -24,6 +24,18 @@ const welcomeMessage: ChatMessage = {
 function formatMessages(messages: ChatMessage[]) {
     return messages.map((message, index) => {
         if (message.role === 'assistant') {
+            if (message.isFunctionCall) {
+                return <div key={index} className={styles['bubble-assistant']}>
+                    {(index === 0) && <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />}
+                    <div className={classNames(styles['message-function-call'], index !== 0 ? styles['message-assistant-padded'] : null)} dangerouslySetInnerHTML={{ __html: `<p>Executing functions: ${message.content}</p>` }}></div>
+                </div>
+            }
+            if (message.isThinking) {
+                return <div key={index} className={styles['bubble-assistant']}>
+                    {(index === 0) && <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />}
+                    <div className={classNames(styles['message-thinking'], index !== 0 ? styles['message-assistant-padded'] : null)} dangerouslySetInnerHTML={{ __html: message.content }}></div>
+                </div>
+            }
             return <div key={index} className={styles['bubble-assistant']}>
                 {(index === 0) && <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />}
                 <div className={classNames(styles['message-assistant'], index !== 0 ? styles['message-assistant-padded'] : null)} dangerouslySetInnerHTML={{ __html: message.content }}></div>
@@ -128,10 +140,19 @@ export default function Chat() {
                 const conversation = messages.toReversed()
                 const assistantResponse = await getAssistantResponse(conversation, model, usecase)
                 const newAssistantMessages = []
+                const hasFunctionCalls = assistantResponse.function_calls.length > 0
                 if (assistantResponse.freeform_response) {
                     newAssistantMessages.push({
                         role: 'assistant',
-                        content: `<p>${assistantResponse.freeform_response}</p> ${assistantResponse.function_calls.length > 0 ? '<p>Calling functions: ' + assistantResponse.function_calls.map(call => `<code>${call}</code>`).join(', ') + '</p>' : ''}`
+                        content: `<p>${assistantResponse.freeform_response}</p>`,
+                        isThinking: hasFunctionCalls
+                    })
+                }
+                if (hasFunctionCalls) {
+                    newAssistantMessages.push({
+                        role: 'assistant',
+                        content: assistantResponse.function_calls.map(call => `<code>${call}</code>`).join(', '),
+                        isFunctionCall: true
                     })
                 }
                 if (assistantResponse.parse) {
@@ -141,7 +162,30 @@ export default function Chat() {
                     })
                 }
                 setLoading(false)
-                setMessages([...newAssistantMessages.toReversed(), ...messages])
+                
+                // Add messages with random short delays between each
+                // Add in original order (thinking, function calls, response) so they appear correctly when displayed
+                let cumulativeDelay = 0
+                newAssistantMessages.forEach((message, index) => {
+                    if (index > 0) {
+                        cumulativeDelay += 600 + Math.random() * 400 // Random delay between 600-1000ms
+                    }
+                    setTimeout(() => {
+                        setMessages(prevMessages => {
+                            // Check if message already exists to avoid duplicates
+                            const messageExists = prevMessages.some(
+                                msg => msg.content === message.content && 
+                                       msg.role === message.role &&
+                                       msg.isFunctionCall === message.isFunctionCall &&
+                                       msg.isThinking === message.isThinking
+                            )
+                            if (!messageExists) {
+                                return [message, ...prevMessages]
+                            }
+                            return prevMessages
+                        })
+                    }, cumulativeDelay)
+                })
             }
         }
         addAssistantMessage()
