@@ -104,7 +104,7 @@ export default function Chat() {
     const [messages, setMessages] = useState([welcomeMessage])
     const [loading, setLoading] = useState(false)
     const [showModelDropdown, setShowModelDropdown] = useState(false)
-    const [model, setModel] = useState(ModelType.GeminiFlash25)
+    const [model, setModel] = useState(ModelType.Gemini)
     const [showSidebar, setShowSidebar] = useState(false)
     const [docRefId, setDocRefId] = useState(null)
     const [backendReady, setBackendReady] = useState(false)
