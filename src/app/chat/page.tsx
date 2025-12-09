@@ -189,7 +189,7 @@ export default function Chat() {
             }
         }
         addAssistantMessage()
-    }, [messages, model])
+    }, [messages, model, usecase])
 
     useEffect(() => {
         async function saveConversation() {

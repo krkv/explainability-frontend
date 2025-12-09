@@ -189,7 +189,7 @@ export default function Eacl2026() {
             }
         }
         addAssistantMessage()
-    }, [messages, model])
+    }, [messages, model, usecase])
 
     useEffect(() => {
         async function saveConversation() {
