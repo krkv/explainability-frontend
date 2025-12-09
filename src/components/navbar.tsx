@@ -2,16 +2,11 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { Sansation } from 'next/font/google'
+import { sansation } from '@/fonts/sansation'
 import styles from '@/styles/navbar.module.css'
 import chatIcon from '@/assets/chat.png'
 import classNames from 'classnames'
 import { useState } from 'react'
-
-const sansation = Sansation({
-    subsets: ['latin'],
-    weight: ['300', '400', '700']
-})
 
 export default function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false)

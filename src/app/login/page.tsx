@@ -1,6 +1,6 @@
 'use client'
 
-import { Sansation } from 'next/font/google'
+import { sansation } from '@/fonts/sansation'
 import classNames from 'classnames'
 import styles from '@/styles/login.module.css'
 import { validateForm as validateFormAction } from '@/actions/auth'
@@ -8,11 +8,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import assistantIcon from '@/assets/claire-b.png'
 import { useState } from 'react'
-
-const sansation = Sansation({
-    subsets: ['latin'],
-    weight: ['300', '400', '700']
-})
 
 function AccessForm() {
     const [email, setEmail] = useState('')

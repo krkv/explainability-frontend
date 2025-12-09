@@ -1,16 +1,11 @@
 import { Suspense } from 'react'
-import { Sansation } from 'next/font/google'
+import { sansation } from '@/fonts/sansation'
 import classNames from 'classnames'
 import styles from '@/styles/home.module.css'
 import Navbar from '@/components/navbar'
 import Video from '@/components/video'
 import Footer from '@/components/footer'
 import ContactForm from '@/components/contact'
-
-const sansation = Sansation({
-    subsets: ['latin'],
-    weight: ['300', '400', '700']
-})
 
 export default function HomePage() {
     return (

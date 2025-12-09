@@ -11,6 +11,9 @@
       "@/components/*": [
         "components/*"
       ],
+      "@/fonts/*": [
+        "fonts/*"
+      ],
       "@/lib/*": [
         "lib/*"
       ],
