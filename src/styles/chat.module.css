@@ -321,8 +321,8 @@
     margin: 0px;
     overflow-x: auto;
     opacity: 0.85;
-    font-style: italic;
     border: 0;
+    font-size: 0.9em;
 }
 
 .message-thinking.message-assistant-padded {
@@ -343,6 +343,7 @@
     overflow-x: auto;
     border: 0;
     opacity: 0.85;
+    font-size: 0.9em;
 }
 
 .message-function-call.message-assistant-padded {
@@ -363,6 +364,7 @@
 
 .message-function-call p {
     margin: 0;
+    color: #666;
 }
 
 .message-assistant table {
