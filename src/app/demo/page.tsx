@@ -171,8 +171,8 @@ export default function Demo() {
                     }
                     setTimeout(() => {
                         setMessages(prevMessages => {
-                            // Check if message already exists to avoid duplicates
-                            const messageExists = prevMessages.some(
+                            // Check if message already exists in the recent history to avoid duplicates from strict mode
+                            const messageExists = prevMessages.slice(0, 4).some(
                                 msg => msg.content === message.content &&
                                     msg.role === message.role &&
                                     msg.isFunctionCall === message.isFunctionCall &&
