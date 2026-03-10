@@ -102,7 +102,7 @@ export default function Demo() {
     const [messages, setMessages] = useState([welcomeMessage])
     const [loading, setLoading] = useState(false)
     const [showModelDropdown, setShowModelDropdown] = useState(false)
-    const [model, setModel] = useState(ModelType.Gemini)
+    const [model, setModel] = useState(ModelType.GeminiFlash25)
     const [showSidebar, setShowSidebar] = useState(false)
     const [docRefId, setDocRefId] = useState(null)
     const [backendReady, setBackendReady] = useState(false)
@@ -161,7 +161,7 @@ export default function Demo() {
                     })
                 }
                 setLoading(false)
-                
+
                 // Add messages with random short delays between each
                 // Add in original order (thinking, function calls, response) so they appear correctly when displayed
                 let cumulativeDelay = 0
@@ -173,10 +173,10 @@ export default function Demo() {
                         setMessages(prevMessages => {
                             // Check if message already exists to avoid duplicates
                             const messageExists = prevMessages.some(
-                                msg => msg.content === message.content && 
-                                       msg.role === message.role &&
-                                       msg.isFunctionCall === message.isFunctionCall &&
-                                       msg.isThinking === message.isThinking
+                                msg => msg.content === message.content &&
+                                    msg.role === message.role &&
+                                    msg.isFunctionCall === message.isFunctionCall &&
+                                    msg.isThinking === message.isThinking
                             )
                             if (!messageExists) {
                                 return [message, ...prevMessages]
@@ -267,9 +267,8 @@ export default function Demo() {
                         <div className={styles['dropdown']} onClick={toggleModelDropdown}>
                             <a className={styles['toolbar-button']}>Model: {model}</a>
                             <div className={showModelDropdown ? styles['dropdown-content'] : styles['hidden']} onClick={onSelectModel}>
-                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Gemini}</a>
                                 <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.GeminiFlash25}</a>
-                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Llama}</a>
+                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Gemini}</a>
                             </div>
                         </div>
                     </div>
@@ -283,9 +282,9 @@ export default function Demo() {
                     {formatMessages(messages)}
                 </div>
                 <form action={addUserMessage} className={styles['chat-footer']}>
-                    <input 
-                        name='userMessage' 
-                        className={styles['chat-input']} 
+                    <input
+                        name='userMessage'
+                        className={styles['chat-input']}
                         placeholder="Type your message here..."
                         disabled={loading}
                     ></input>
