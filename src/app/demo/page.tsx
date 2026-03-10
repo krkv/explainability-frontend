@@ -200,9 +200,6 @@ export default function Demo() {
         }
     }, [messages, docRefId, loading, demoUserId])
 
-    function getUserMessageCount() {
-        return messages.filter(msg => msg.role === 'user').length
-    }
 
     function addUserMessage(formData) {
         const userMessage = formData.get('userMessage')
