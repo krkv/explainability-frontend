@@ -99,7 +99,7 @@ const demoMessagesHeart = [
     'How do different risk factors interact with each other in the model\'s decision-making process?',
 ]
 
-export default function Eacl2026() {
+export default function Demo() {
     const [messages, setMessages] = useState([welcomeMessage])
     const [loading, setLoading] = useState(false)
     const [showModelDropdown, setShowModelDropdown] = useState(false)
@@ -108,7 +108,7 @@ export default function Eacl2026() {
     const [docRefId, setDocRefId] = useState(null)
     const [backendReady, setBackendReady] = useState(false)
     const [usecase, setUsecase] = useState(UsecaseType.Energy)
-    const [eacl2026UserId] = useState(() => `eacl2026-${Date.now()}`)
+    const [demoUserId] = useState(() => `demo-${Date.now()}`)
 
     useEffect(() => {
         async function checkBackend() {
@@ -193,13 +193,13 @@ export default function Eacl2026() {
 
     useEffect(() => {
         async function saveConversation() {
-            const id = await handleSaveConversation(messages.toReversed(), docRefId, eacl2026UserId)
+            const id = await handleSaveConversation(messages.toReversed(), docRefId, demoUserId)
             setDocRefId(id)
         }
         if (messages.length > 1 && loading === false) {
             saveConversation()
         }
-    }, [messages, docRefId, loading, eacl2026UserId])
+    }, [messages, docRefId, loading, demoUserId])
 
     function getUserMessageCount() {
         return messages.filter(msg => msg.role === 'user').length
