@@ -104,7 +104,7 @@ export default function Chat() {
     const [messages, setMessages] = useState([welcomeMessage])
     const [loading, setLoading] = useState(false)
     const [showModelDropdown, setShowModelDropdown] = useState(false)
-    const [model, setModel] = useState(ModelType.Gemini)
+    const [model, setModel] = useState(ModelType.GeminiFlash25)
     const [showSidebar, setShowSidebar] = useState(false)
     const [docRefId, setDocRefId] = useState(null)
     const [backendReady, setBackendReady] = useState(false)
@@ -271,9 +271,8 @@ export default function Chat() {
                         <div className={styles['dropdown']} onClick={toggleModelDropdown}>
                             <a className={styles['toolbar-button']}>Model: {model}</a>
                             <div className={showModelDropdown ? styles['dropdown-content'] : styles['hidden']} onClick={onSelectModel}>
-                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Gemini}</a>
                                 <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.GeminiFlash25}</a>
-                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Llama}</a>
+                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Gemini}</a>
                             </div>
                         </div>
                     </div>
