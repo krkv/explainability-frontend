@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import classNames from 'classnames';
 import { handleSaveConversation } from "@/lib/firebase"
 import { getAssistantResponse, getBackendReady } from '@/actions/assistant'
@@ -12,8 +12,15 @@ import energyIcon from '@/assets/energy-consumption.png'
 import styles from '@/styles/chat.module.css'
 import loaders from '@/styles/loaders.module.css'
 
+function createMessage(message: Omit<ChatMessage, 'id'>): ChatMessage {
+    return {
+        id: crypto.randomUUID(),
+        ...message
+    }
+}
 
 const welcomeMessage: ChatMessage = {
+    id: 'welcome-message',
     role: 'assistant',
     content: "<p>Hello! I'm Claire, your explainability assistant. I am here to help you better understand your data, models and predictions, and more.</p>\
     <p>Ask me anything using the chat box below. You can also use the examples on the right to see how I respond to different questions.</p>\
@@ -25,23 +32,23 @@ function formatMessages(messages: ChatMessage[]) {
     return messages.map((message, index) => {
         if (message.role === 'assistant') {
             if (message.isFunctionCall) {
-                return <div key={index} className={styles['bubble-assistant']}>
+                return <div key={message.id} className={styles['bubble-assistant']}>
                     {(index === 0) && <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />}
                     <div className={classNames(styles['message-function-call'], index !== 0 ? styles['message-assistant-padded'] : null)} dangerouslySetInnerHTML={{ __html: `<p>Executing functions: ${message.content}</p>` }}></div>
                 </div>
             }
             if (message.isThinking) {
-                return <div key={index} className={styles['bubble-assistant']}>
+                return <div key={message.id} className={styles['bubble-assistant']}>
                     {(index === 0) && <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />}
                     <div className={classNames(styles['message-thinking'], index !== 0 ? styles['message-assistant-padded'] : null)} dangerouslySetInnerHTML={{ __html: message.content }}></div>
                 </div>
             }
-            return <div key={index} className={styles['bubble-assistant']}>
+            return <div key={message.id} className={styles['bubble-assistant']}>
                 {(index === 0) && <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />}
                 <div className={classNames(styles['message-assistant'], index !== 0 ? styles['message-assistant-padded'] : null)} dangerouslySetInnerHTML={{ __html: message.content }}></div>
             </div>
         }
-        return <div key={index} className={styles['message-user']}>{message.content}</div>
+        return <div key={message.id} className={styles['message-user']}>{message.content}</div>
     })
 }
 
@@ -108,6 +115,13 @@ export default function Demo() {
     const [backendReady, setBackendReady] = useState(false)
     const [usecase, setUsecase] = useState(UsecaseType.Energy)
     const [demoUserId] = useState(() => `demo-${Date.now()}`)
+    const pendingMessageTimeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([])
+    const processedUserMessageIdRef = useRef<string | null>(null)
+
+    function clearPendingMessageTimeouts() {
+        pendingMessageTimeoutsRef.current.forEach(clearTimeout)
+        pendingMessageTimeoutsRef.current = []
+    }
 
     useEffect(() => {
         async function checkBackend() {
@@ -133,34 +147,57 @@ export default function Demo() {
     }, [backendReady])
 
     useEffect(() => {
+        return () => {
+            clearPendingMessageTimeouts()
+        }
+    }, [])
+
+    useEffect(() => {
         async function addAssistantMessage() {
             const lastMessage = messages?.[0]
             if (lastMessage && lastMessage.role === 'user') {
+                if (processedUserMessageIdRef.current === lastMessage.id) {
+                    return
+                }
+
+                processedUserMessageIdRef.current = lastMessage.id
+
                 const conversation = messages.toReversed()
                 const assistantResponse = await getAssistantResponse(conversation, model, usecase)
-                const newAssistantMessages = []
+
+                if (processedUserMessageIdRef.current !== lastMessage.id) {
+                    return
+                }
+
+                const newAssistantMessages: ChatMessage[] = []
                 const hasFunctionCalls = assistantResponse.function_calls.length > 0
                 if (assistantResponse.freeform_response) {
-                    newAssistantMessages.push({
+                    newAssistantMessages.push(createMessage({
                         role: 'assistant',
                         content: `<p>${assistantResponse.freeform_response}</p>`,
                         isThinking: hasFunctionCalls
-                    })
+                    }))
                 }
                 if (hasFunctionCalls) {
-                    newAssistantMessages.push({
+                    newAssistantMessages.push(createMessage({
                         role: 'assistant',
                         content: assistantResponse.function_calls.map(call => `<code>${call}</code>`).join(', '),
                         isFunctionCall: true
-                    })
+                    }))
                 }
                 if (assistantResponse.parse) {
-                    newAssistantMessages.push({
+                    newAssistantMessages.push(createMessage({
                         role: 'assistant',
                         content: assistantResponse.parse
-                    })
+                    }))
                 }
-                setLoading(false)
+
+                clearPendingMessageTimeouts()
+
+                if (newAssistantMessages.length === 0) {
+                    setLoading(false)
+                    return
+                }
 
                 // Add messages with random short delays between each
                 // Add in original order (thinking, function calls, response) so they appear correctly when displayed
@@ -169,21 +206,17 @@ export default function Demo() {
                     if (index > 0) {
                         cumulativeDelay += 600 + Math.random() * 400 // Random delay between 600-1000ms
                     }
-                    setTimeout(() => {
-                        setMessages(prevMessages => {
-                            // Check if message already exists in the recent history to avoid duplicates from strict mode
-                            const messageExists = prevMessages.slice(0, 4).some(
-                                msg => msg.content === message.content &&
-                                    msg.role === message.role &&
-                                    msg.isFunctionCall === message.isFunctionCall &&
-                                    msg.isThinking === message.isThinking
-                            )
-                            if (!messageExists) {
-                                return [message, ...prevMessages]
-                            }
-                            return prevMessages
-                        })
+
+                    const timeoutId = setTimeout(() => {
+                        setMessages(prevMessages => [message, ...prevMessages])
+
+                        if (index === newAssistantMessages.length - 1) {
+                            setLoading(false)
+                            pendingMessageTimeoutsRef.current = []
+                        }
                     }, cumulativeDelay)
+
+                    pendingMessageTimeoutsRef.current.push(timeoutId)
                 })
             }
         }
@@ -204,14 +237,18 @@ export default function Demo() {
     function addUserMessage(formData) {
         const userMessage = formData.get('userMessage')
         if (userMessage !== '') {
-            setMessages([{ role: 'user', content: userMessage }, ...messages])
+            clearPendingMessageTimeouts()
+            setMessages([createMessage({ role: 'user', content: userMessage }), ...messages])
             setLoading(true)
         }
     }
 
     function resetConversation() {
+        clearPendingMessageTimeouts()
+        processedUserMessageIdRef.current = null
         setMessages([welcomeMessage])
         setDocRefId(null)
+        setLoading(false)
     }
 
     function toggleModelDropdown() {
@@ -229,7 +266,8 @@ export default function Demo() {
 
     function handleDemoButtonClick(event) {
         const userMessage = event.target.innerText
-        setMessages([{ role: 'user', content: userMessage }, ...messages])
+        clearPendingMessageTimeouts()
+        setMessages([createMessage({ role: 'user', content: userMessage }), ...messages])
         setLoading(true)
     }
 
@@ -303,4 +341,3 @@ export default function Demo() {
         </div>
     )
 }
-
