@@ -3,7 +3,6 @@
 import { ChatMessage } from "@/types/chat"
 import { initializeApp } from "firebase/app"
 import { getFirestore, doc, collection, setDoc, serverTimestamp, updateDoc } from "firebase/firestore"
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
 import { getSession } from '@/lib/session'
 import { getDemoAccessCodeForUserId } from '@/lib/demo-access'
 
@@ -44,19 +43,5 @@ export async function handleSaveConversation(messages: ChatMessage[], docRefId: 
             updatedAt: serverTimestamp()
         })
         return docRefId
-    }
-}
-
-export async function handleUserLogin(email: string, password: string) {
-    const auth = getAuth()
-    try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password)
-        const user = userCredential.user
-        return user
-    } catch (error) {
-        const errorCode = error.code
-        const errorMessage = error.message
-        console.error("Error signing in:", errorCode, errorMessage)
-        return null
     }
 }

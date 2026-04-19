@@ -58,9 +58,10 @@ npm run dev
 
 ### Accessing the App
 
-Once running, navigate to the chat interface in your browser:
+Once running, navigate to the demo access page in your browser and enter a valid access code:
 
-- **Chat Interface**: [http://localhost:3000/chat](http://localhost:3000/chat)
+- **Demo Access**: [http://localhost:3000/demo](http://localhost:3000/demo)
+- **Protected Chat**: [http://localhost:3000/chat](http://localhost:3000/chat)
 
 ## 📡 API Integration
 
