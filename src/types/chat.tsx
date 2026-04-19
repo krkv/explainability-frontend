@@ -16,3 +16,7 @@ export enum UsecaseType {
     Energy = 'Energy Consumption',
     Heart = 'Heart Disease',
 }
+
+export function isUsecaseType(value: string): value is UsecaseType {
+    return Object.values(UsecaseType).includes(value as UsecaseType)
+}

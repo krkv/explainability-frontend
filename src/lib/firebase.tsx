@@ -4,7 +4,8 @@ import { ChatMessage } from "@/types/chat"
 import { initializeApp } from "firebase/app"
 import { getFirestore, doc, collection, setDoc, serverTimestamp, updateDoc } from "firebase/firestore"
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth"
-import { cookies } from 'next/headers'
+import { getSession } from '@/lib/session'
+import { getDemoAccessCodeForUserId } from '@/lib/demo-access'
 
 const firebaseConfig = {
     apiKey: process.env.FIREBASE_API_KEY,
@@ -20,19 +21,25 @@ const app = initializeApp(firebaseConfig)
 const db = getFirestore(app)
 
 export async function handleSaveConversation(messages: ChatMessage[], docRefId: string | null, userId?: string | null) {
+    const session = await getSession()
+    const finalUserId = userId !== undefined ? userId : session?.userId ?? null
+    const accessCode = session?.mode === 'demo' && session.userId
+        ? getDemoAccessCodeForUserId(session.userId)
+        : null
+
     if (!docRefId) {
         const docRef = doc(collection(db, "conversations"))
-        // Use provided userId, or get from cookies if not provided
-        const finalUserId = userId !== undefined ? userId : (await cookies()).get('userId')?.value
         await setDoc(docRef, {
             createdAt: serverTimestamp(),
             userId: finalUserId,
+            accessCode,
             messages
         })
         return docRef.id
     } else {
         const docRef = doc(db, "conversations", docRefId)
         await updateDoc(docRef, {
+            accessCode,
             messages,
             updatedAt: serverTimestamp()
         })

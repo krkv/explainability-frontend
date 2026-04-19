@@ -41,7 +41,10 @@ A Next.js-based web application providing an interactive conversational interfac
    ```bash
    BACKEND_HOST="http://127.0.0.1"
    BACKEND_PORT="8080" # Make sure this matches your backend port (default: 8080 or 5000)
+   DEMO_ACCESS_CODES='{"example1":"Energy Consumption","example2":"Heart Disease"}'
    ```
+
+   `DEMO_ACCESS_CODES` should be a JSON object that maps each access code to one of the supported demo chat use cases.
 
 ## 🏃 Running the Application
 

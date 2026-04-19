@@ -51,6 +51,13 @@
     z-index: 1;
 }
 
+.page-subtitle {
+    color: rgba(33, 33, 33, 0.75);
+    margin: 0 0 1rem 0;
+    line-height: 1.5;
+    text-align: center;
+}
+
 .access-input {
     padding: 1rem 1.25rem;
     margin: 1rem 0 0 0;
@@ -152,6 +159,19 @@
     font-size: 0.85rem;
     margin-top: 0.5rem;
     font-weight: 500;
+}
+
+.info-message {
+    color: rgba(33, 33, 33, 0.75);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 1rem 0 0 0;
+    text-align: center;
+}
+
+.info-message a {
+    color: var(--denim);
+    font-weight: 600;
 }
 
 .input-error {
