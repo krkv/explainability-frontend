@@ -55,7 +55,7 @@ function DemoAccessForm() {
             )}
 
             <p className={styles['page-subtitle']}>
-                Enter your access code to open the demo chat.
+                Enter your access code to open the chat
             </p>
 
             <div className={styles['form-group']}>
@@ -80,7 +80,7 @@ function DemoAccessForm() {
                 className={styles['access-button']}
                 disabled={isLoading}
             >
-                {isLoading ? 'Opening demo...' : 'Open Demo'}
+                {isLoading ? 'Loading...' : 'Enter'}
             </button>
 
             <p className={styles['info-message']}>

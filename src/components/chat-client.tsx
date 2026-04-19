@@ -29,9 +29,7 @@ const welcomeMessage: ChatMessage = {
     id: 'welcome-message',
     role: 'assistant',
     content: "<p>Hello! I'm Claire, your explainability assistant. I am here to help you better understand your data, models and predictions, and more.</p>\
-    <p>Ask me anything using the chat box below. You can also use the examples on the right to see how I respond to different questions.</p>\
-    <p>I can tell you about the pre-loaded dataset and ML model, show you the data, predict instances using the ML model and explain predictions,\
-    check the accuracy of predictions, generate counterfactual explanations, answer what-if questions about a data sample, and predict a new sample.</p>",
+    <p>Ask me anything using the chat box below. You can also use the examples on the right to see how I respond to different questions.</p>"
 }
 
 function formatMessages(messages: ChatMessage[]) {
@@ -105,29 +103,21 @@ const demoMessagesEnergy = [
 ]
 
 const demoMessagesHeart = [
-    'What is the description of the model?',
-    'What are the parameters used for training the model?',
-    'Does patient 11 has heart disease?',
+    'What kind of model is used?',
+    'What is the dataset?',
+    'What are the patient IDs?',
+    'Does patient 2 have heart disease?',
     'Why did the model predict that this patient has heart disease?',
-    'What are the probability scores for heart disease vs. no heart disease for patient 11?',
-    'If the patient\'s blood pressure was lower, would the risk of heart disease decrease?',
-    'What is the most important feature for patient 11 prediction?',
-    'What are the common patterns among patients diagnosed with heart disease?',
-    'What if the patient 11 cholesterol was reduced by 30 mg/dL?',
+    'Show the patient\'s data',
+    'If the patient\'s blood pressure was lower by 15, would the risk of heart disease decrease?',
     'How would it be possible to change this prediction?',
     'If this patient were 10 years younger, how would that affect the prediction?',
     'Which patients did the model misclassify most often?',
     'What is the false positive rate of the model?',
-    'Are there certain patient profiles where the model struggles to make accurate predictions?',
-    'Does the model tend to over-predict or under-predict heart disease cases?',
     'What is the precision and recall of the model?',
-    'Can you show the confusion matrix for the model\'s predictions?',
-    'What is the F1-score of the model?',
     'How well does the model generalize across different age groups?',
     'What is the AUC-ROC score of the model?',
     'How does the model generally decide whether a patient has heart disease?',
-    'Which features contribute the most to predictions across all patients?',
-    'What trends does the model recognize in predicting heart disease?',
     'How do different risk factors interact with each other in the model\'s decision-making process?',
 ]
 
