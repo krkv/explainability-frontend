@@ -1,6 +1,5 @@
 import 'server-only'
 
-import { createHash } from 'crypto'
 import { isUsecaseType, UsecaseType } from '@/types/chat'
 
 interface DemoAccessSessionData {
@@ -60,20 +59,6 @@ function getDemoAccessConfig() {
     }
 }
 
-function buildDemoUserId(accessCode: string, usecase: UsecaseType) {
-    const accessCodeHash = createHash('sha256')
-        .update(accessCode)
-        .digest('hex')
-        .slice(0, 12)
-
-    const usecaseSlug = usecase
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-+|-+$/g, '')
-
-    return `demo-${usecaseSlug}-${accessCodeHash}`
-}
-
 export function resolveDemoAccessCode(accessCode: string): DemoAccessSessionData | null {
     const normalizedAccessCode = accessCode.trim()
     if (!normalizedAccessCode) {
@@ -86,19 +71,12 @@ export function resolveDemoAccessCode(accessCode: string): DemoAccessSessionData
     }
 
     return {
-        userId: buildDemoUserId(normalizedAccessCode, usecase),
+        userId: normalizedAccessCode,
         usecase,
     }
 }
 
 export function getDemoAccessCodeForUserId(userId: string) {
     const demoAccessConfig = getDemoAccessConfig()
-
-    for (const [accessCode, usecase] of Object.entries(demoAccessConfig)) {
-        if (buildDemoUserId(accessCode, usecase) === userId) {
-            return accessCode
-        }
-    }
-
-    return null
+    return demoAccessConfig[userId] ? userId : null
 }

@@ -1,9 +1,29 @@
 'use server'
 
+import { getSession } from '@/lib/session'
 import { ChatMessage, ModelType, UsecaseType } from "@/types/chat"
 
 const backendHost = process.env.BACKEND_HOST
 const backendPort = process.env.BACKEND_PORT
+
+function getBackendUrl(endpoint: string) {
+    return `${backendHost}:${backendPort}/${endpoint}`
+}
+
+async function getObservabilityHeaders(sessionId: string) {
+    const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        "X-Session-ID": sessionId,
+        "X-Request-ID": crypto.randomUUID(),
+    }
+    const session = await getSession()
+
+    if (session?.userId && session.expiresAt >= new Date()) {
+        headers["X-User-ID"] = session.userId
+    }
+
+    return headers
+}
 
 export async function getBackendReady() {
     const endpoint = 'ready'
@@ -15,7 +35,7 @@ export async function getBackendReady() {
             }, 2000);
         });
 
-        const response = fetch(`${backendHost}:${backendPort}/${endpoint}`, {
+        const response = fetch(getBackendUrl(endpoint), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -35,7 +55,12 @@ export async function getBackendReady() {
     }
 }
 
-export async function getAssistantResponse(conversation: ChatMessage[], model: ModelType, usecase: UsecaseType) {
+export async function getAssistantResponse(
+    conversation: ChatMessage[],
+    model: ModelType,
+    usecase: UsecaseType,
+    sessionId: string,
+) {
     const endpoint = 'getAssistantResponse'
 
     try {
@@ -45,11 +70,9 @@ export async function getAssistantResponse(conversation: ChatMessage[], model: M
             usecase: usecase
         }
 
-        const response = await fetch(`${backendHost}:${backendPort}/${endpoint}`, {
+        const response = await fetch(getBackendUrl(endpoint), {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: await getObservabilityHeaders(sessionId),
             body: JSON.stringify(requestBody)
         })
 

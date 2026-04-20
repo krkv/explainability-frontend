@@ -135,6 +135,7 @@ export default function ChatClient({
     const [usecase, setUsecase] = useState<UsecaseType | null>(initialUsecase)
     const pendingMessageTimeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([])
     const processedUserMessageIdRef = useRef<string | null>(null)
+    const conversationSessionIdRef = useRef(crypto.randomUUID())
 
     function clearPendingMessageTimeouts() {
         pendingMessageTimeoutsRef.current.forEach(clearTimeout)
@@ -183,7 +184,12 @@ export default function ChatClient({
             processedUserMessageIdRef.current = lastMessage.id
 
             const conversation = messages.toReversed()
-            const assistantResponse = await getAssistantResponse(conversation, model, usecase)
+            const assistantResponse = await getAssistantResponse(
+                conversation,
+                model,
+                usecase,
+                conversationSessionIdRef.current,
+            )
 
             if (processedUserMessageIdRef.current !== lastMessage.id) {
                 return
@@ -268,6 +274,7 @@ export default function ChatClient({
     function resetConversation() {
         clearPendingMessageTimeouts()
         processedUserMessageIdRef.current = null
+        conversationSessionIdRef.current = crypto.randomUUID()
         setMessages([welcomeMessage])
         setDocRefId(null)
         setLoading(false)
