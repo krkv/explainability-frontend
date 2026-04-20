@@ -5,7 +5,6 @@ import classNames from 'classnames'
 import Image from 'next/image'
 import { logout } from '@/actions/auth'
 import { getAssistantResponse, getBackendReady } from '@/actions/assistant'
-import { handleSaveConversation } from '@/lib/firebase'
 import assistantIcon from '@/assets/claire-b.png'
 import heartIcon from '@/assets/heart-disease.png'
 import energyIcon from '@/assets/energy-consumption.png'
@@ -130,7 +129,6 @@ export default function ChatClient({
     const [showModelDropdown, setShowModelDropdown] = useState(false)
     const [model, setModel] = useState(ModelType.GeminiFlash25)
     const [showSidebar, setShowSidebar] = useState(false)
-    const [docRefId, setDocRefId] = useState<string | null>(null)
     const [backendReady, setBackendReady] = useState(false)
     const [usecase, setUsecase] = useState<UsecaseType | null>(initialUsecase)
     const pendingMessageTimeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([])
@@ -250,17 +248,6 @@ export default function ChatClient({
         addAssistantMessage()
     }, [messages, model, usecase])
 
-    useEffect(() => {
-        async function saveConversation() {
-            const id = await handleSaveConversation(messages.toReversed(), docRefId)
-            setDocRefId(id)
-        }
-
-        if (messages.length > 1 && loading === false) {
-            saveConversation()
-        }
-    }, [messages, docRefId, loading])
-
     function addUserMessage(formData: FormData) {
         const userMessage = formData.get('userMessage')?.toString().trim() ?? ''
 
@@ -276,7 +263,6 @@ export default function ChatClient({
         processedUserMessageIdRef.current = null
         conversationSessionIdRef.current = crypto.randomUUID()
         setMessages([welcomeMessage])
-        setDocRefId(null)
         setLoading(false)
     }
 

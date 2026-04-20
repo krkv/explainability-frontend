@@ -75,8 +75,3 @@ export function resolveDemoAccessCode(accessCode: string): DemoAccessSessionData
         usecase,
     }
 }
-
-export function getDemoAccessCodeForUserId(userId: string) {
-    const demoAccessConfig = getDemoAccessConfig()
-    return demoAccessConfig[userId] ? userId : null
-}

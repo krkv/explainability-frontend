@@ -100,8 +100,6 @@ export async function createSession({
         sameSite: 'lax',
         path: '/',
     })
-
-    await cookieStore.set('userId', userId)
 }
 
 export async function getSession() {
@@ -114,5 +112,4 @@ export async function getSession() {
 export async function deleteSession() {
     const cookieStore = await cookies()
     await cookieStore.delete('session')
-    await cookieStore.delete('userId')
 }

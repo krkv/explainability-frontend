@@ -23,7 +23,6 @@ export default async function middleware(req: NextRequest) {
             : NextResponse.next()
 
         response.cookies.delete('session')
-        response.cookies.delete('userId')
         return response
     }
 
