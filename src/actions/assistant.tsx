@@ -1,7 +1,7 @@
 'use server'
 
 import { getSession } from '@/lib/session'
-import { ChatMessage, ModelType, UsecaseType } from "@/types/chat"
+import { AssistantResponse, ChatMessage, ModelType, UsecaseType } from "@/types/chat"
 
 const backendHost = process.env.BACKEND_HOST
 const backendPort = process.env.BACKEND_PORT
@@ -23,6 +23,24 @@ async function getObservabilityHeaders(sessionId: string) {
     }
 
     return headers
+}
+
+function createFallbackResponse(message: string): AssistantResponse {
+    return {
+        freeform_response: message,
+        function_calls: [],
+    }
+}
+
+function normalizeAssistantResponse(response: Partial<AssistantResponse> | null | undefined): AssistantResponse {
+    return {
+        freeform_response: response?.freeform_response,
+        function_calls: Array.isArray(response?.function_calls) ? response.function_calls : [],
+        parse: response?.parse,
+        suggested_follow_ups: Array.isArray(response?.suggested_follow_ups)
+            ? response.suggested_follow_ups.filter((suggestion): suggestion is string => typeof suggestion === 'string')
+            : undefined,
+    }
 }
 
 export async function getBackendReady() {
@@ -60,7 +78,7 @@ export async function getAssistantResponse(
     model: ModelType,
     usecase: UsecaseType,
     sessionId: string,
-) {
+): Promise<AssistantResponse> {
     const endpoint = 'getAssistantResponse'
 
     try {
@@ -77,20 +95,14 @@ export async function getAssistantResponse(
         })
 
         if (!response.ok) {
-            return {
-                "freeform_response": "I'm having trouble at the server &#128543; Please, try again later.",
-                "function_calls": [],
-            }
+            return createFallbackResponse("I'm having trouble at the server &#128543; Please, try again later.")
         }
 
-        const json = await response.json();
+        const json = await response.json()
 
-        return json.assistantResponse
+        return normalizeAssistantResponse(json.assistantResponse)
     } catch (error) {
-        console.error(error.message);
-        return {
-            "freeform_response": "I'm having trouble connecting to the server &#128543; Please, try again later.",
-            "function_calls": [],
-        }
+        console.error(error instanceof Error ? error.message : error)
+        return createFallbackResponse("I'm having trouble connecting to the server &#128543; Please, try again later.")
     }
 }

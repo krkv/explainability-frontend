@@ -120,6 +120,10 @@ const demoMessagesHeart = [
     'How do different risk factors interact with each other in the model\'s decision-making process?',
 ]
 
+function getDefaultHeartDemoMessages() {
+    return [...demoMessagesHeart]
+}
+
 export default function ChatClient({
     initialUsecase = null,
     usecaseLocked = false,
@@ -131,6 +135,7 @@ export default function ChatClient({
     const [showSidebar, setShowSidebar] = useState(false)
     const [backendReady, setBackendReady] = useState(false)
     const [usecase, setUsecase] = useState<UsecaseType | null>(initialUsecase)
+    const [heartDemoMessages, setHeartDemoMessages] = useState(getDefaultHeartDemoMessages)
     const pendingMessageTimeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([])
     const processedUserMessageIdRef = useRef<string | null>(null)
     const conversationSessionIdRef = useRef(crypto.randomUUID())
@@ -191,6 +196,10 @@ export default function ChatClient({
 
             if (processedUserMessageIdRef.current !== lastMessage.id) {
                 return
+            }
+
+            if (usecase === UsecaseType.Heart && assistantResponse.suggested_follow_ups?.length) {
+                setHeartDemoMessages(assistantResponse.suggested_follow_ups)
             }
 
             const newAssistantMessages: ChatMessage[] = []
@@ -264,6 +273,10 @@ export default function ChatClient({
         conversationSessionIdRef.current = crypto.randomUUID()
         setMessages([welcomeMessage])
         setLoading(false)
+
+        if (usecase === UsecaseType.Heart) {
+            setHeartDemoMessages(getDefaultHeartDemoMessages())
+        }
     }
 
     function toggleModelDropdown() {
@@ -296,7 +309,7 @@ export default function ChatClient({
         }
 
         if (usecase === UsecaseType.Heart) {
-            return demoMessagesHeart
+            return heartDemoMessages
         }
 
         return []

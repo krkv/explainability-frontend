@@ -6,6 +6,13 @@ export interface ChatMessage {
     isThinking?: boolean
 }
 
+export interface AssistantResponse {
+    freeform_response?: string
+    function_calls: string[]
+    parse?: string
+    suggested_follow_ups?: string[]
+}
+
 export enum ModelType {
     Llama = 'Llama 3.3 70B Instruct',
     Gemini = 'Gemini 2.0 Flash',
