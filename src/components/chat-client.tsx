@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import classNames from 'classnames'
 import Image from 'next/image'
 import { logout } from '@/actions/auth'
-import { getAssistantResponse, getBackendReady } from '@/actions/assistant'
+import { getAssistantResponse, getBackendReady, getSuggestedFollowUps } from '@/actions/assistant'
 import assistantIcon from '@/assets/claire-b.png'
 import heartIcon from '@/assets/heart-disease.png'
 import energyIcon from '@/assets/energy-consumption.png'
@@ -187,19 +187,38 @@ export default function ChatClient({
             processedUserMessageIdRef.current = lastMessage.id
 
             const conversation = messages.toReversed()
-            const assistantResponse = await getAssistantResponse(
+            const assistantResponsePromise = getAssistantResponse(
                 conversation,
                 model,
                 usecase,
                 conversationSessionIdRef.current,
             )
+            const suggestedFollowUpsPromise = usecase === UsecaseType.Heart
+                ? getSuggestedFollowUps(
+                    conversation,
+                    usecase,
+                    conversationSessionIdRef.current,
+                )
+                : Promise.resolve(undefined)
+
+            suggestedFollowUpsPromise.then((suggestedFollowUps) => {
+                if (
+                    processedUserMessageIdRef.current !== lastMessage.id ||
+                    usecase !== UsecaseType.Heart ||
+                    !suggestedFollowUps?.length
+                ) {
+                    return
+                }
+
+                setHeartDemoMessages(suggestedFollowUps)
+            }).catch((error) => {
+                console.error(error)
+            })
+
+            const assistantResponse = await assistantResponsePromise
 
             if (processedUserMessageIdRef.current !== lastMessage.id) {
                 return
-            }
-
-            if (usecase === UsecaseType.Heart && assistantResponse.suggested_follow_ups?.length) {
-                setHeartDemoMessages(assistantResponse.suggested_follow_ups)
             }
 
             const newAssistantMessages: ChatMessage[] = []

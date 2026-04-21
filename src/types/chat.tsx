@@ -13,6 +13,10 @@ export interface AssistantResponse {
     suggested_follow_ups?: string[]
 }
 
+export interface SuggestedFollowUpsResponse {
+    suggested_follow_ups?: string[]
+}
+
 export enum ModelType {
     Llama = 'Llama 3.3 70B Instruct',
     Gemini = 'Gemini 2.0 Flash',

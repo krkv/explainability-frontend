@@ -1,7 +1,7 @@
 'use server'
 
 import { getSession } from '@/lib/session'
-import { AssistantResponse, ChatMessage, ModelType, UsecaseType } from "@/types/chat"
+import { AssistantResponse, ChatMessage, ModelType, SuggestedFollowUpsResponse, UsecaseType } from "@/types/chat"
 
 const backendHost = process.env.BACKEND_HOST
 const backendPort = process.env.BACKEND_PORT
@@ -37,6 +37,16 @@ function normalizeAssistantResponse(response: Partial<AssistantResponse> | null 
         freeform_response: response?.freeform_response,
         function_calls: Array.isArray(response?.function_calls) ? response.function_calls : [],
         parse: response?.parse,
+        suggested_follow_ups: Array.isArray(response?.suggested_follow_ups)
+            ? response.suggested_follow_ups.filter((suggestion): suggestion is string => typeof suggestion === 'string')
+            : undefined,
+    }
+}
+
+function normalizeSuggestedFollowUpsResponse(
+    response: Partial<SuggestedFollowUpsResponse> | null | undefined
+): SuggestedFollowUpsResponse {
+    return {
         suggested_follow_ups: Array.isArray(response?.suggested_follow_ups)
             ? response.suggested_follow_ups.filter((suggestion): suggestion is string => typeof suggestion === 'string')
             : undefined,
@@ -104,5 +114,34 @@ export async function getAssistantResponse(
     } catch (error) {
         console.error(error instanceof Error ? error.message : error)
         return createFallbackResponse("I'm having trouble connecting to the server &#128543; Please, try again later.")
+    }
+}
+
+export async function getSuggestedFollowUps(
+    conversation: ChatMessage[],
+    usecase: UsecaseType,
+    sessionId: string,
+): Promise<string[] | undefined> {
+    const endpoint = 'getSuggestedFollowUps'
+
+    try {
+        const response = await fetch(getBackendUrl(endpoint), {
+            method: "POST",
+            headers: await getObservabilityHeaders(sessionId),
+            body: JSON.stringify({
+                conversation,
+                usecase,
+            }),
+        })
+
+        if (!response.ok) {
+            return undefined
+        }
+
+        const json = await response.json()
+        return normalizeSuggestedFollowUpsResponse(json).suggested_follow_ups
+    } catch (error) {
+        console.error(error instanceof Error ? error.message : error)
+        return undefined
     }
 }

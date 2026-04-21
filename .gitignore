@@ -2,3 +2,5 @@
 .next
 .vscode
 node_modules
+.agents
+skills-lock.json
