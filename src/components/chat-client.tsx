@@ -136,6 +136,7 @@ export default function ChatClient({
     const [backendReady, setBackendReady] = useState(false)
     const [usecase, setUsecase] = useState<UsecaseType | null>(initialUsecase)
     const [heartDemoMessages, setHeartDemoMessages] = useState(getDefaultHeartDemoMessages)
+    const [suggestionsLoading, setSuggestionsLoading] = useState(false)
     const pendingMessageTimeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([])
     const processedUserMessageIdRef = useRef<string | null>(null)
     const conversationSessionIdRef = useRef(crypto.randomUUID())
@@ -211,6 +212,10 @@ export default function ChatClient({
                 }
 
                 setHeartDemoMessages(suggestedFollowUps)
+            }).finally(() => {
+                if (processedUserMessageIdRef.current === lastMessage.id && usecase === UsecaseType.Heart) {
+                    setSuggestionsLoading(false)
+                }
             }).catch((error) => {
                 console.error(error)
             })
@@ -281,6 +286,9 @@ export default function ChatClient({
 
         if (userMessage !== '') {
             clearPendingMessageTimeouts()
+            if (usecase === UsecaseType.Heart) {
+                setSuggestionsLoading(true)
+            }
             setMessages([createMessage({ role: 'user', content: userMessage }), ...messages])
             setLoading(true)
         }
@@ -292,6 +300,7 @@ export default function ChatClient({
         conversationSessionIdRef.current = crypto.randomUUID()
         setMessages([welcomeMessage])
         setLoading(false)
+        setSuggestionsLoading(false)
 
         if (usecase === UsecaseType.Heart) {
             setHeartDemoMessages(getDefaultHeartDemoMessages())
@@ -314,6 +323,9 @@ export default function ChatClient({
     function handleDemoButtonClick(event: React.MouseEvent<HTMLButtonElement>) {
         const userMessage = event.currentTarget.innerText
         clearPendingMessageTimeouts()
+        if (usecase === UsecaseType.Heart) {
+            setSuggestionsLoading(true)
+        }
         setMessages([createMessage({ role: 'user', content: userMessage }), ...messages])
         setLoading(true)
     }
@@ -395,11 +407,17 @@ export default function ChatClient({
             <div className={showSidebar ? styles['demo-container'] : styles['hidden']}>
                 <h2>Example prompts</h2>
                 <p>You can try the examples below to see how the model responds to different questions:</p>
-                <ul>
-                    {getDemoMessages().map((message, index) => (
-                        <li key={index}><button className={classNames(styles['demo-button'])} onClick={handleDemoButtonClick} disabled={loading}>{message}</button></li>
-                    ))}
-                </ul>
+                {usecase === UsecaseType.Heart && suggestionsLoading ? (
+                    <div className={styles['demo-loading']}>
+                        <div className={loaders['message-loader']}></div>
+                    </div>
+                ) : (
+                    <ul>
+                        {getDemoMessages().map((message, index) => (
+                            <li key={index}><button className={classNames(styles['demo-button'])} onClick={handleDemoButtonClick} disabled={loading}>{message}</button></li>
+                        ))}
+                    </ul>
+                )}
             </div>
         </div>
     )

@@ -165,6 +165,21 @@
     list-style-type: none;
 }
 
+.demo-loading {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px 42px;
+}
+
+.demo-loading-text {
+    margin: 0;
+    color: #33415C;
+    font-family: 'Noto Sans', serif;
+}
+
 .demo-button {
     font-family: 'Noto Sans', serif;
     color: #33415C;
