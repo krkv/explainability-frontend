@@ -8,8 +8,16 @@ function getLangfuseBaseUrl() {
     return process.env.NEXT_PUBLIC_LANGFUSE_HOST ?? process.env.NEXT_PUBLIC_LANGFUSE_BASE_URL
 }
 
+function isProductionEnvironment() {
+    return process.env.NODE_ENV === 'production'
+}
+
 export function isLangfuseFeedbackEnabled() {
-    return Boolean(process.env.NEXT_PUBLIC_LANGFUSE_PUBLIC_KEY && getLangfuseBaseUrl())
+    return Boolean(
+        isProductionEnvironment()
+        && process.env.NEXT_PUBLIC_LANGFUSE_PUBLIC_KEY
+        && getLangfuseBaseUrl()
+    )
 }
 
 export function getLangfuseClient() {
@@ -20,7 +28,7 @@ export function getLangfuseClient() {
     const publicKey = process.env.NEXT_PUBLIC_LANGFUSE_PUBLIC_KEY
     const baseUrl = getLangfuseBaseUrl()
 
-    if (!publicKey || !baseUrl) {
+    if (!isProductionEnvironment() || !publicKey || !baseUrl) {
         langfuseClient = null
         return langfuseClient
     }
