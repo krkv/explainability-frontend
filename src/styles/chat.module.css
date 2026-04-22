@@ -196,6 +196,11 @@
     margin: 0;
 }
 
+.suggestion-item-fading {
+    opacity: 0;
+    transform: none;
+}
+
 @keyframes suggestion-fade-in {
     from {
         opacity: 0;

@@ -17,7 +17,7 @@ interface ChatClientProps {
     usecaseLocked?: boolean
 }
 
-type FollowUpAnimationState = 'idle' | 'entering' | 'exiting'
+type FollowUpAnimationState = 'idle' | 'entering' | 'exiting' | 'fading'
 
 interface FollowUpSuggestion {
     id: string
@@ -31,6 +31,8 @@ interface PendingSuggestionTimeout {
 }
 
 const SUGGESTION_TRANSITION_MS = 400
+const MAX_HEART_SUGGESTIONS = 10
+const NEW_HEART_SUGGESTION_COUNT = 3
 
 function createMessage(message: Omit<ChatMessage, 'id'>): ChatMessage {
     return {
@@ -284,9 +286,10 @@ export default function ChatClient({
         conversation: ChatMessage[],
         sessionId: string,
     ) {
-        const remainingSuggestions = heartDemoMessages
-            .filter((suggestion) => suggestion.id !== selectedSuggestion.id)
-            .map((suggestion) => suggestion.text)
+        const remainingSuggestions = heartDemoMessages.filter(
+            (suggestion) => suggestion.id !== selectedSuggestion.id
+        )
+        const remainingSuggestionTexts = remainingSuggestions.map((suggestion) => suggestion.text)
 
         setHeartDemoMessages((prevMessages) =>
             prevMessages.map((suggestion) =>
@@ -315,8 +318,8 @@ export default function ChatClient({
             UsecaseType.Heart,
             sessionId,
             {
-                limit: 1,
-                excludeSuggestions: [...remainingSuggestions, selectedSuggestion.text],
+                limit: NEW_HEART_SUGGESTION_COUNT,
+                excludeSuggestions: [...remainingSuggestionTexts, selectedSuggestion.text],
             },
         )
 
@@ -324,23 +327,70 @@ export default function ChatClient({
             replacementPromise,
             removeSuggestionPromise,
         ])
-        const replacementSuggestion = replacementSuggestions?.[0]
 
-        if (!replacementSuggestion || conversationSessionIdRef.current !== sessionId) {
+        if (!replacementSuggestions?.length || conversationSessionIdRef.current !== sessionId) {
             return
         }
 
-        setHeartDemoMessages((prevMessages) => {
-            const alreadyVisible = prevMessages.some(
-                (suggestion) => suggestion.text.toLowerCase() === replacementSuggestion.toLowerCase()
-            )
+        const visibleSuggestionTexts = new Set(
+            remainingSuggestionTexts.map((suggestion) => suggestion.toLowerCase())
+        )
+        const newSuggestions = replacementSuggestions.filter((suggestion) => {
+            const normalizedSuggestion = suggestion.toLowerCase()
 
-            if (alreadyVisible) {
-                return prevMessages
+            if (visibleSuggestionTexts.has(normalizedSuggestion)) {
+                return false
             }
 
-            return [...prevMessages, createFollowUpSuggestion(replacementSuggestion, 'entering')]
+            visibleSuggestionTexts.add(normalizedSuggestion)
+            return true
         })
+
+        if (!newSuggestions.length) {
+            return
+        }
+
+        const overflowCount = Math.max(
+            0,
+            remainingSuggestions.length + newSuggestions.length - MAX_HEART_SUGGESTIONS
+        )
+
+        if (overflowCount > 0) {
+            const suggestionIdsToRemove = remainingSuggestions
+                .slice(0, overflowCount)
+                .map((suggestion) => suggestion.id)
+
+            setHeartDemoMessages((prevMessages) =>
+                prevMessages.map((suggestion) =>
+                    suggestionIdsToRemove.includes(suggestion.id)
+                        ? { ...suggestion, animationState: 'fading' }
+                        : suggestion
+                )
+            )
+
+            await new Promise<void>((resolve) => {
+                const timeoutId = setTimeout(() => {
+                    setHeartDemoMessages((prevMessages) =>
+                        prevMessages.filter((suggestion) => !suggestionIdsToRemove.includes(suggestion.id))
+                    )
+                    pendingSuggestionTimeoutsRef.current = pendingSuggestionTimeoutsRef.current.filter(
+                        (pendingTimeout) => pendingTimeout.timeoutId !== timeoutId
+                    )
+                    resolve()
+                }, SUGGESTION_TRANSITION_MS)
+
+                pendingSuggestionTimeoutsRef.current.push({ timeoutId, resolve })
+            })
+
+            if (conversationSessionIdRef.current !== sessionId) {
+                return
+            }
+        }
+
+        setHeartDemoMessages((prevMessages) => [
+            ...prevMessages,
+            ...newSuggestions.map((suggestion) => createFollowUpSuggestion(suggestion, 'entering')),
+        ])
     }
 
     function submitUserMessage(
@@ -495,6 +545,7 @@ export default function ChatClient({
                                 styles['suggestion-item'],
                                 message.animationState === 'entering' ? styles['suggestion-item-entering'] : null,
                                 message.animationState === 'exiting' ? styles['suggestion-item-exiting'] : null,
+                                message.animationState === 'fading' ? styles['suggestion-item-fading'] : null,
                             )}
                         >
                             <button
