@@ -17,10 +17,36 @@ interface ChatClientProps {
     usecaseLocked?: boolean
 }
 
+type FollowUpAnimationState = 'idle' | 'entering' | 'exiting'
+
+interface FollowUpSuggestion {
+    id: string
+    text: string
+    animationState: FollowUpAnimationState
+}
+
+interface PendingSuggestionTimeout {
+    timeoutId: ReturnType<typeof setTimeout>
+    resolve: () => void
+}
+
+const SUGGESTION_TRANSITION_MS = 400
+
 function createMessage(message: Omit<ChatMessage, 'id'>): ChatMessage {
     return {
         id: crypto.randomUUID(),
         ...message,
+    }
+}
+
+function createFollowUpSuggestion(
+    text: string,
+    animationState: FollowUpAnimationState = 'idle',
+): FollowUpSuggestion {
+    return {
+        id: crypto.randomUUID(),
+        text,
+        animationState,
     }
 }
 
@@ -110,7 +136,7 @@ const demoMessagesHeart = [
 ]
 
 function getDefaultHeartDemoMessages() {
-    return [...demoMessagesHeart]
+    return demoMessagesHeart.map((message) => createFollowUpSuggestion(message))
 }
 
 export default function ChatClient({
@@ -121,18 +147,26 @@ export default function ChatClient({
     const [loading, setLoading] = useState(false)
     const [showModelDropdown, setShowModelDropdown] = useState(false)
     const [model, setModel] = useState(ModelType.GeminiFlash25)
-    const [showSidebar, setShowSidebar] = useState(false)
+    const [showSidebar, setShowSidebar] = useState(true)
     const [backendReady, setBackendReady] = useState(false)
     const [usecase, setUsecase] = useState<UsecaseType | null>(initialUsecase)
     const [heartDemoMessages, setHeartDemoMessages] = useState(getDefaultHeartDemoMessages)
-    const [suggestionsLoading, setSuggestionsLoading] = useState(false)
     const pendingMessageTimeoutsRef = useRef<Array<ReturnType<typeof setTimeout>>>([])
+    const pendingSuggestionTimeoutsRef = useRef<PendingSuggestionTimeout[]>([])
     const processedUserMessageIdRef = useRef<string | null>(null)
     const conversationSessionIdRef = useRef(crypto.randomUUID())
 
     function clearPendingMessageTimeouts() {
         pendingMessageTimeoutsRef.current.forEach(clearTimeout)
         pendingMessageTimeoutsRef.current = []
+    }
+
+    function clearPendingSuggestionTimeouts() {
+        pendingSuggestionTimeoutsRef.current.forEach(({ timeoutId, resolve }) => {
+            clearTimeout(timeoutId)
+            resolve()
+        })
+        pendingSuggestionTimeoutsRef.current = []
     }
 
     useEffect(() => {
@@ -160,6 +194,7 @@ export default function ChatClient({
     useEffect(() => {
         return () => {
             clearPendingMessageTimeouts()
+            clearPendingSuggestionTimeouts()
         }
     }, [])
 
@@ -183,32 +218,6 @@ export default function ChatClient({
                 usecase,
                 conversationSessionIdRef.current,
             )
-            const suggestedFollowUpsPromise = usecase === UsecaseType.Heart
-                ? getSuggestedFollowUps(
-                    conversation,
-                    usecase,
-                    conversationSessionIdRef.current,
-                )
-                : Promise.resolve(undefined)
-
-            suggestedFollowUpsPromise.then((suggestedFollowUps) => {
-                if (
-                    processedUserMessageIdRef.current !== lastMessage.id ||
-                    usecase !== UsecaseType.Heart ||
-                    !suggestedFollowUps?.length
-                ) {
-                    return
-                }
-
-                setHeartDemoMessages(suggestedFollowUps)
-            }).finally(() => {
-                if (processedUserMessageIdRef.current === lastMessage.id && usecase === UsecaseType.Heart) {
-                    setSuggestionsLoading(false)
-                }
-            }).catch((error) => {
-                console.error(error)
-            })
-
             const assistantResponse = await assistantResponsePromise
 
             if (processedUserMessageIdRef.current !== lastMessage.id) {
@@ -270,26 +279,108 @@ export default function ChatClient({
         addAssistantMessage()
     }, [messages, model, usecase])
 
+    async function replaceHeartSuggestion(
+        selectedSuggestion: FollowUpSuggestion,
+        conversation: ChatMessage[],
+        sessionId: string,
+    ) {
+        const remainingSuggestions = heartDemoMessages
+            .filter((suggestion) => suggestion.id !== selectedSuggestion.id)
+            .map((suggestion) => suggestion.text)
+
+        setHeartDemoMessages((prevMessages) =>
+            prevMessages.map((suggestion) =>
+                suggestion.id === selectedSuggestion.id
+                    ? { ...suggestion, animationState: 'exiting' }
+                    : suggestion
+            )
+        )
+
+        const removeSuggestionPromise = new Promise<void>((resolve) => {
+            const timeoutId = setTimeout(() => {
+                setHeartDemoMessages((prevMessages) =>
+                    prevMessages.filter((suggestion) => suggestion.id !== selectedSuggestion.id)
+                )
+                pendingSuggestionTimeoutsRef.current = pendingSuggestionTimeoutsRef.current.filter(
+                    (pendingTimeout) => pendingTimeout.timeoutId !== timeoutId
+                )
+                resolve()
+            }, SUGGESTION_TRANSITION_MS)
+
+            pendingSuggestionTimeoutsRef.current.push({ timeoutId, resolve })
+        })
+
+        const replacementPromise = getSuggestedFollowUps(
+            conversation,
+            UsecaseType.Heart,
+            sessionId,
+            {
+                limit: 1,
+                excludeSuggestions: [...remainingSuggestions, selectedSuggestion.text],
+            },
+        )
+
+        const [replacementSuggestions] = await Promise.all([
+            replacementPromise,
+            removeSuggestionPromise,
+        ])
+        const replacementSuggestion = replacementSuggestions?.[0]
+
+        if (!replacementSuggestion || conversationSessionIdRef.current !== sessionId) {
+            return
+        }
+
+        setHeartDemoMessages((prevMessages) => {
+            const alreadyVisible = prevMessages.some(
+                (suggestion) => suggestion.text.toLowerCase() === replacementSuggestion.toLowerCase()
+            )
+
+            if (alreadyVisible) {
+                return prevMessages
+            }
+
+            return [...prevMessages, createFollowUpSuggestion(replacementSuggestion, 'entering')]
+        })
+    }
+
+    function submitUserMessage(
+        userMessage: string,
+        selectedSuggestion?: FollowUpSuggestion,
+    ) {
+        if (userMessage === '') {
+            return
+        }
+
+        clearPendingMessageTimeouts()
+
+        const nextUserMessage = createMessage({ role: 'user', content: userMessage })
+        const conversation = [...messages].toReversed()
+        conversation.push(nextUserMessage)
+
+        setMessages((prevMessages) => [nextUserMessage, ...prevMessages])
+        setLoading(true)
+
+        if (usecase === UsecaseType.Heart && selectedSuggestion) {
+            void replaceHeartSuggestion(
+                selectedSuggestion,
+                conversation,
+                conversationSessionIdRef.current,
+            )
+        }
+    }
+
     function addUserMessage(formData: FormData) {
         const userMessage = formData.get('userMessage')?.toString().trim() ?? ''
-
-        if (userMessage !== '') {
-            clearPendingMessageTimeouts()
-            if (usecase === UsecaseType.Heart) {
-                setSuggestionsLoading(true)
-            }
-            setMessages([createMessage({ role: 'user', content: userMessage }), ...messages])
-            setLoading(true)
-        }
+        submitUserMessage(userMessage)
     }
 
     function resetConversation() {
         clearPendingMessageTimeouts()
+        clearPendingSuggestionTimeouts()
         processedUserMessageIdRef.current = null
         conversationSessionIdRef.current = crypto.randomUUID()
         setMessages([welcomeMessage])
         setLoading(false)
-        setSuggestionsLoading(false)
 
         if (usecase === UsecaseType.Heart) {
             setHeartDemoMessages(getDefaultHeartDemoMessages())
@@ -310,13 +401,18 @@ export default function ChatClient({
     }
 
     function handleDemoButtonClick(event: React.MouseEvent<HTMLButtonElement>) {
-        const userMessage = event.currentTarget.innerText
-        clearPendingMessageTimeouts()
-        if (usecase === UsecaseType.Heart) {
-            setSuggestionsLoading(true)
+        const selectedSuggestionId = event.currentTarget.dataset.suggestionId
+
+        if (usecase === UsecaseType.Heart && selectedSuggestionId) {
+            const selectedSuggestion = heartDemoMessages.find((suggestion) => suggestion.id === selectedSuggestionId)
+
+            if (selectedSuggestion) {
+                submitUserMessage(selectedSuggestion.text, selectedSuggestion)
+                return
+            }
         }
-        setMessages([createMessage({ role: 'user', content: userMessage }), ...messages])
-        setLoading(true)
+
+        submitUserMessage(event.currentTarget.innerText)
     }
 
     function handleLogout() {
@@ -327,11 +423,6 @@ export default function ChatClient({
         if (usecase === UsecaseType.Energy) {
             return demoMessagesEnergy
         }
-
-        if (usecase === UsecaseType.Heart) {
-            return heartDemoMessages
-        }
-
         return []
     }
 
@@ -396,17 +487,31 @@ export default function ChatClient({
             <div className={showSidebar ? styles['demo-container'] : styles['hidden']}>
                 <h2>Suggested prompts</h2>
                 <p>You can try these questions to explore the data and predictions:</p>
-                {usecase === UsecaseType.Heart && suggestionsLoading ? (
-                    <div className={styles['demo-loading']}>
-                        <div className={loaders['message-loader']}></div>
-                    </div>
-                ) : (
-                    <ul>
-                        {getDemoMessages().map((message, index) => (
-                            <li key={index}><button className={classNames(styles['demo-button'])} onClick={handleDemoButtonClick} disabled={loading}>{message}</button></li>
-                        ))}
-                    </ul>
-                )}
+                <ul className={styles['suggestions-list']}>
+                    {usecase === UsecaseType.Heart ? heartDemoMessages.map((message) => (
+                        <li
+                            key={message.id}
+                            className={classNames(
+                                styles['suggestion-item'],
+                                message.animationState === 'entering' ? styles['suggestion-item-entering'] : null,
+                                message.animationState === 'exiting' ? styles['suggestion-item-exiting'] : null,
+                            )}
+                        >
+                            <button
+                                className={classNames(styles['demo-button'])}
+                                onClick={handleDemoButtonClick}
+                                disabled={loading || message.animationState === 'exiting'}
+                                data-suggestion-id={message.id}
+                            >
+                                {message.text}
+                            </button>
+                        </li>
+                    )) : getDemoMessages().map((message, index) => (
+                        <li key={index}>
+                            <button className={classNames(styles['demo-button'])} onClick={handleDemoButtonClick} disabled={loading}>{message}</button>
+                        </li>
+                    ))}
+                </ul>
             </div>
         </div>
     )

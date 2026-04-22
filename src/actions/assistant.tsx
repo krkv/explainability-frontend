@@ -53,6 +53,11 @@ function normalizeSuggestedFollowUpsResponse(
     }
 }
 
+interface SuggestedFollowUpsOptions {
+    limit?: number
+    excludeSuggestions?: string[]
+}
+
 export async function getBackendReady() {
     const endpoint = 'ready'
 
@@ -121,6 +126,7 @@ export async function getSuggestedFollowUps(
     conversation: ChatMessage[],
     usecase: UsecaseType,
     sessionId: string,
+    options?: SuggestedFollowUpsOptions,
 ): Promise<string[] | undefined> {
     const endpoint = 'getSuggestedFollowUps'
 
@@ -131,6 +137,8 @@ export async function getSuggestedFollowUps(
             body: JSON.stringify({
                 conversation,
                 usecase,
+                limit: options?.limit,
+                exclude_suggestions: options?.excludeSuggestions,
             }),
         })
 
