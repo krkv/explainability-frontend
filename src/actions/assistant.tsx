@@ -37,6 +37,7 @@ function normalizeAssistantResponse(response: Partial<AssistantResponse> | null 
         freeform_response: response?.freeform_response,
         function_calls: Array.isArray(response?.function_calls) ? response.function_calls : [],
         parse: response?.parse,
+        trace_id: response?.trace_id,
         suggested_follow_ups: Array.isArray(response?.suggested_follow_ups)
             ? response.suggested_follow_ups.filter((suggestion): suggestion is string => typeof suggestion === 'string')
             : undefined,

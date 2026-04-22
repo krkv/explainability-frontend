@@ -4,12 +4,14 @@ export interface ChatMessage {
     content: string
     isFunctionCall?: boolean
     isThinking?: boolean
+    traceId?: string
 }
 
 export interface AssistantResponse {
     freeform_response?: string
     function_calls: string[]
     parse?: string
+    trace_id?: string
     suggested_follow_ups?: string[]
 }
 

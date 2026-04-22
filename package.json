@@ -10,6 +10,7 @@
     "@vercel/analytics": "^1.5.0",
     "classnames": "^2.5.1",
     "jose": "^5.9.6",
+    "langfuse": "^3.38.20",
     "next": "15.1.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

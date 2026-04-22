@@ -8,6 +8,7 @@ import { getAssistantResponse, getBackendReady, getSuggestedFollowUps } from '@/
 import assistantIcon from '@/assets/claire-b.png'
 import heartIcon from '@/assets/heart-disease.png'
 import energyIcon from '@/assets/energy-consumption.png'
+import MessageFeedback from '@/components/message-feedback'
 import styles from '@/styles/chat.module.css'
 import loaders from '@/styles/loaders.module.css'
 import { ChatMessage, ModelType, UsecaseType } from '@/types/chat'
@@ -60,11 +61,33 @@ const welcomeMessage: ChatMessage = {
 }
 
 function formatMessages(messages: ChatMessage[]) {
+    function isFeedbackTarget(message: ChatMessage, index: number) {
+        if (
+            message.role !== 'assistant'
+            || !message.traceId
+            || message.isFunctionCall
+            || message.isThinking
+        ) {
+            return false
+        }
+
+        return !messages.slice(0, index).some((candidate) =>
+            candidate.role === 'assistant'
+            && candidate.traceId === message.traceId
+            && !candidate.isFunctionCall
+            && !candidate.isThinking
+        )
+    }
+
     return messages.map((message, index) => {
         if (message.role === 'assistant') {
             if (message.isFunctionCall) {
                 return <div key={message.id} className={styles['bubble-assistant']}>
-                    {index === 0 && <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />}
+                    {index === 0 && (
+                        <div className={styles['assistant-icon-wrap']}>
+                            <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />
+                        </div>
+                    )}
                     <div
                         className={classNames(
                             styles['message-function-call'],
@@ -77,7 +100,11 @@ function formatMessages(messages: ChatMessage[]) {
 
             if (message.isThinking) {
                 return <div key={message.id} className={styles['bubble-assistant']}>
-                    {index === 0 && <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />}
+                    {index === 0 && (
+                        <div className={styles['assistant-icon-wrap']}>
+                            <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />
+                        </div>
+                    )}
                     <div
                         className={classNames(
                             styles['message-thinking'],
@@ -88,15 +115,38 @@ function formatMessages(messages: ChatMessage[]) {
                 </div>
             }
 
+            const showFeedback = isFeedbackTarget(message, index)
+
             return <div key={message.id} className={styles['bubble-assistant']}>
-                {index === 0 && <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />}
-                <div
-                    className={classNames(
-                        styles['message-assistant'],
-                        index !== 0 ? styles['message-assistant-padded'] : null
-                    )}
-                    dangerouslySetInnerHTML={{ __html: message.content }}
-                ></div>
+                {index === 0 && (
+                    <div
+                        className={classNames(
+                            styles['assistant-icon-wrap'],
+                            showFeedback ? styles['assistant-icon-wrap-lifted'] : null
+                        )}
+                    >
+                        <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />
+                    </div>
+                )}
+                <div className={styles['assistant-message-stack']}>
+                    <div
+                        className={classNames(
+                            styles['message-assistant'],
+                            index !== 0 ? styles['message-assistant-padded'] : null
+                        )}
+                        dangerouslySetInnerHTML={{ __html: message.content }}
+                    ></div>
+                    {showFeedback ? (
+                        <div
+                            className={classNames(
+                                styles['message-assistant-feedback'],
+                                index !== 0 ? styles['message-assistant-padded'] : null
+                            )}
+                        >
+                            <MessageFeedback traceId={message.traceId} />
+                        </div>
+                    ) : null}
+                </div>
             </div>
         }
 
@@ -105,7 +155,9 @@ function formatMessages(messages: ChatMessage[]) {
 }
 
 const loadingMessage = <div key={0} className={styles['bubble-assistant']}>
-    <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />
+    <div className={styles['assistant-icon-wrap']}>
+        <Image src={assistantIcon} alt="Assistant icon" width={50} height={50} />
+    </div>
     <div className={styles['message-assistant']}><div className={loaders['message-loader']}></div></div>
 </div>
 
@@ -157,6 +209,7 @@ export default function ChatClient({
     const pendingSuggestionTimeoutsRef = useRef<PendingSuggestionTimeout[]>([])
     const processedUserMessageIdRef = useRef<string | null>(null)
     const conversationSessionIdRef = useRef(crypto.randomUUID())
+    const shouldShowLoadingMessage = loading && messages[0]?.role !== 'assistant'
 
     function clearPendingMessageTimeouts() {
         pendingMessageTimeoutsRef.current.forEach(clearTimeout)
@@ -234,6 +287,7 @@ export default function ChatClient({
                     role: 'assistant',
                     content: `<p>${assistantResponse.freeform_response}</p>`,
                     isThinking: hasFunctionCalls,
+                    traceId: assistantResponse.trace_id,
                 }))
             }
 
@@ -242,6 +296,7 @@ export default function ChatClient({
                     role: 'assistant',
                     content: assistantResponse.function_calls.map(call => `<code>${call}</code>`).join(', '),
                     isFunctionCall: true,
+                    traceId: assistantResponse.trace_id,
                 }))
             }
 
@@ -249,6 +304,7 @@ export default function ChatClient({
                 newAssistantMessages.push(createMessage({
                     role: 'assistant',
                     content: assistantResponse.parse,
+                    traceId: assistantResponse.trace_id,
                 }))
             }
 
@@ -521,7 +577,7 @@ export default function ChatClient({
                     </div>
                 </div>
                 <div className={styles['messages-container']}>
-                    {loading ? loadingMessage : null}
+                    {shouldShowLoadingMessage ? loadingMessage : null}
                     {formatMessages(messages)}
                 </div>
                 <form action={addUserMessage} className={styles['chat-footer']}>
