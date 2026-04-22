@@ -61,9 +61,10 @@ npm run dev
 
 ### Accessing the App
 
-Once running, navigate to the demo access page in your browser and enter a valid access code:
+Once running, navigate to the demo access page in your browser and enter a valid access code, or open a shareable demo link with the code embedded in the URL:
 
 - **Demo Access**: [http://localhost:3000/demo](http://localhost:3000/demo)
+- **Shared Demo Link**: `http://localhost:3000/demo/<accessCode>`
 - **Protected Chat**: [http://localhost:3000/chat](http://localhost:3000/chat)
 
 ## 📡 API Integration

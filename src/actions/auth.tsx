@@ -1,20 +1,15 @@
 'use server'
 
 import { redirect } from 'next/navigation'
-import { createSession, deleteSession } from '@/lib/session'
-import { resolveDemoAccessCode } from '@/lib/demo-access'
+import { deleteSession } from '@/lib/session'
+import { createDemoSessionFromAccessCode } from '@/lib/demo-access'
 
 export async function validateDemoAccess(f: FormData) {
     const formJson = Object.fromEntries(f.entries())
     const accessCode = formJson.accessCode?.toString().trim() ?? ''
-    const demoAccess = resolveDemoAccessCode(accessCode)
+    const demoAccess = await createDemoSessionFromAccessCode(accessCode)
 
     if (demoAccess) {
-        await createSession({
-            userId: demoAccess.userId,
-            usecase: demoAccess.usecase,
-            mode: 'demo',
-        })
         redirect('/chat')
     }
 
