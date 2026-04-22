@@ -27,8 +27,8 @@ function createMessage(message: Omit<ChatMessage, 'id'>): ChatMessage {
 const welcomeMessage: ChatMessage = {
     id: 'welcome-message',
     role: 'assistant',
-    content: "<p>Hello! I'm Claire, your explainability assistant. I am here to help you better understand your data, models and predictions, and more.</p>\
-    <p>Ask me anything using the chat box below. You can also use the examples on the right to see how I respond to different questions.</p>"
+    content: "<p>Hello! I'm Claire, your explainability assistant. I am here to help you better understand your data, models and predictions.</p>\
+    <p>Ask me anything using the chat box below. You can also use the explore tab to see examples and suggestions.</p>"
 }
 
 function formatMessages(messages: ChatMessage[]) {
@@ -102,22 +102,11 @@ const demoMessagesEnergy = [
 ]
 
 const demoMessagesHeart = [
-    'What kind of model is used?',
-    'What is the dataset?',
+    'What is current dataset?',
+    'How many patients are predicted positive?',
     'What are the patient IDs?',
-    'Does patient 2 have heart disease?',
-    'Why did the model predict that this patient has heart disease?',
-    'Show the patient\'s data',
-    'If the patient\'s blood pressure was lower by 15, would the risk of heart disease decrease?',
-    'How would it be possible to change this prediction?',
-    'If this patient were 10 years younger, how would that affect the prediction?',
-    'Which patients did the model misclassify most often?',
-    'What is the false positive rate of the model?',
-    'What is the precision and recall of the model?',
-    'How well does the model generalize across different age groups?',
-    'What is the AUC-ROC score of the model?',
+    'What kind of machine learning model is used?',
     'How does the model generally decide whether a patient has heart disease?',
-    'How do different risk factors interact with each other in the model\'s decision-making process?',
 ]
 
 function getDefaultHeartDemoMessages() {
@@ -385,7 +374,7 @@ export default function ChatClient({
                         </div>
                     </div>
                     <div>
-                        <button className={styles['toolbar-button']} onClick={toggleSidebar}>Examples</button>
+                        <button className={styles['toolbar-button']} onClick={toggleSidebar}>Explore</button>
                         <button className={classNames(styles['toolbar-button'], styles['red-button'])} onClick={resetConversation}>Reset</button>
                         <button className={classNames(styles['toolbar-button'], styles['red-button'])} onClick={handleLogout}>Logout</button>
                     </div>
@@ -405,8 +394,8 @@ export default function ChatClient({
                 </form>
             </div>
             <div className={showSidebar ? styles['demo-container'] : styles['hidden']}>
-                <h2>Example prompts</h2>
-                <p>You can try the examples below to see how the model responds to different questions:</p>
+                <h2>Suggested prompts</h2>
+                <p>You can try these questions to explore the data and predictions:</p>
                 {usecase === UsecaseType.Heart && suggestionsLoading ? (
                     <div className={styles['demo-loading']}>
                         <div className={loaders['message-loader']}></div>
