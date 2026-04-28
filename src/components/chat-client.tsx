@@ -274,7 +274,14 @@ export default function ChatClient({
     const pendingSuggestionTimeoutsRef = useRef<PendingSuggestionTimeout[]>([])
     const processedUserMessageIdRef = useRef<string | null>(null)
     const conversationSessionIdRef = useRef(crypto.randomUUID())
+    const inputRef = useRef<HTMLInputElement>(null)
     const shouldShowLoadingMessage = loading && messages[0]?.role !== 'assistant'
+
+    function focusComposer() {
+        window.requestAnimationFrame(() => {
+            inputRef.current?.focus()
+        })
+    }
 
     function clearPendingMessageTimeouts() {
         pendingMessageTimeoutsRef.current.forEach(clearTimeout)
@@ -317,6 +324,14 @@ export default function ChatClient({
             clearPendingSuggestionTimeouts()
         }
     }, [])
+
+    useEffect(() => {
+        if (!usecase || !backendReady || loading) {
+            return
+        }
+
+        focusComposer()
+    }, [backendReady, loading, usecase])
 
     useEffect(() => {
         async function addAssistantMessage() {
@@ -551,6 +566,7 @@ export default function ChatClient({
         conversationSessionIdRef.current = crypto.randomUUID()
         setMessages([welcomeMessage])
         setLoading(false)
+        focusComposer()
 
         if (usecase === UsecaseType.Heart) {
             setHeartDemoMessages(getDefaultHeartDemoMessages())
@@ -646,9 +662,11 @@ export default function ChatClient({
                 </div>
                 <form action={addUserMessage} className={styles['chat-footer']}>
                     <input
+                        ref={inputRef}
                         name='userMessage'
                         className={styles['chat-input']}
                         placeholder="Type your message here..."
+                        autoFocus
                         disabled={loading}
                     ></input>
                     <button className={styles['chat-button']} disabled={loading}>Send</button>
