@@ -5,16 +5,7 @@ import { AssistantResponse, ChatMessage, ModelType, SuggestedFollowUpsResponse, 
 
 const backendHost = process.env.BACKEND_HOST
 const backendPort = process.env.BACKEND_PORT
-const ASSISTANT_RESPONSE_TIMEOUT_MS = 30_000
 const BACKEND_READY_TIMEOUT_MS = 2_000
-
-const timedOutAssistantResponses = [
-    "I couldn't process that question this time. Please try again.",
-    "That request did not complete in time. Please try again.",
-    "I wasn't able to finish that response just now. Please try again.",
-    "Something got stuck while I was processing that question. Please try again.",
-    "I couldn't get a response in time for that question. Please try again.",
-]
 
 function getBackendUrl(endpoint: string) {
     return `${backendHost}:${backendPort}/${endpoint}`
@@ -33,18 +24,6 @@ async function getObservabilityHeaders(sessionId: string) {
     }
 
     return headers
-}
-
-function createFallbackResponse(message: string): AssistantResponse {
-    return {
-        freeform_response: message,
-        function_calls: [],
-    }
-}
-
-function getRandomTimedOutAssistantResponse() {
-    const randomIndex = Math.floor(Math.random() * timedOutAssistantResponses.length)
-    return timedOutAssistantResponses[randomIndex]
 }
 
 async function fetchWithTimeout(
@@ -125,6 +104,7 @@ export async function getAssistantResponse(
     sessionId: string,
 ): Promise<AssistantResponse> {
     const endpoint = 'getAssistantResponse'
+    const assistantResponseTimeoutMs = 30_000
 
     try {
         const requestBody = {
@@ -137,10 +117,10 @@ export async function getAssistantResponse(
             method: "POST",
             headers: await getObservabilityHeaders(sessionId),
             body: JSON.stringify(requestBody)
-        }, ASSISTANT_RESPONSE_TIMEOUT_MS)
+        }, assistantResponseTimeoutMs)
 
         if (!response.ok) {
-            return createFallbackResponse("I'm having trouble at the server &#128543; Please, try again later.")
+            throw new Error(`Backend request failed with status ${response.status}`)
         }
 
         const json = await response.json()
@@ -148,12 +128,10 @@ export async function getAssistantResponse(
         return normalizeAssistantResponse(json.assistantResponse)
     } catch (error) {
         console.error(error instanceof Error ? error.message : error)
-
         if (isAbortError(error)) {
-            return createFallbackResponse(getRandomTimedOutAssistantResponse())
+            throw new Error('Backend assistant request timed out')
         }
-
-        return createFallbackResponse("I'm having trouble connecting to the server &#128543; Please, try again later.")
+        throw error
     }
 }
 

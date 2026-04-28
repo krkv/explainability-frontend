@@ -11,7 +11,7 @@ import energyIcon from '@/assets/energy-consumption.png'
 import MessageFeedback from '@/components/message-feedback'
 import styles from '@/styles/chat.module.css'
 import loaders from '@/styles/loaders.module.css'
-import { ChatMessage, ModelType, UsecaseType } from '@/types/chat'
+import { AssistantResponse, ChatMessage, ModelType, UsecaseType } from '@/types/chat'
 
 interface ChatClientProps {
     initialUsecase?: UsecaseType | null
@@ -34,6 +34,15 @@ interface PendingSuggestionTimeout {
 const SUGGESTION_TRANSITION_MS = 400
 const MAX_HEART_SUGGESTIONS = 10
 const NEW_HEART_SUGGESTION_COUNT = 3
+const ASSISTANT_RESPONSE_TIMEOUT_MS = 30_000
+
+const timedOutAssistantResponses = [
+    "I couldn't process that question this time. Please try again.",
+    "That request did not complete in time. Please try again.",
+    "I wasn't able to finish that response just now. Please try again.",
+    "Something got stuck while I was processing that question. Please try again.",
+    "I couldn't get a response in time for that question. Please try again.",
+]
 
 function createMessage(message: Omit<ChatMessage, 'id'>): ChatMessage {
     return {
@@ -51,6 +60,62 @@ function createFollowUpSuggestion(
         text,
         animationState,
     }
+}
+
+function getRandomTimedOutAssistantResponse() {
+    const randomIndex = Math.floor(Math.random() * timedOutAssistantResponses.length)
+    return timedOutAssistantResponses[randomIndex]
+}
+
+function createTimedOutAssistantResponse() {
+    return {
+        freeform_response: getRandomTimedOutAssistantResponse(),
+        function_calls: [],
+    }
+}
+
+function createTimeoutPromise() {
+    return new Promise<AssistantResponse>((resolve) => {
+        setTimeout(() => resolve(createTimedOutAssistantResponse()), ASSISTANT_RESPONSE_TIMEOUT_MS)
+    })
+}
+
+function hasRenderableAssistantContent(response: AssistantResponse) {
+    return Boolean(
+        response.freeform_response
+        || response.parse
+        || response.function_calls.length > 0
+    )
+}
+
+async function getAssistantResponseWithFallback(
+    conversation: ChatMessage[],
+    model: ModelType,
+    usecase: UsecaseType,
+    sessionId: string,
+) {
+    const requestPromise = getAssistantResponse(
+        conversation,
+        model,
+        usecase,
+        sessionId,
+    )
+        .then((response) => {
+            if (hasRenderableAssistantContent(response)) {
+                return response
+            }
+
+            return createTimeoutPromise()
+        })
+        .catch((error) => {
+            console.error(error)
+            return createTimeoutPromise()
+        })
+
+    return Promise.race([
+        requestPromise,
+        createTimeoutPromise(),
+    ])
 }
 
 const welcomeMessage: ChatMessage = {
@@ -267,13 +332,12 @@ export default function ChatClient({
             processedUserMessageIdRef.current = lastMessage.id
 
             const conversation = messages.toReversed()
-            const assistantResponsePromise = getAssistantResponse(
+            const assistantResponse = await getAssistantResponseWithFallback(
                 conversation,
                 model,
                 usecase,
                 conversationSessionIdRef.current,
             )
-            const assistantResponse = await assistantResponsePromise
 
             if (processedUserMessageIdRef.current !== lastMessage.id) {
                 return
