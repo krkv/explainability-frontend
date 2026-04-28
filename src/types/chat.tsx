@@ -20,9 +20,8 @@ export interface SuggestedFollowUpsResponse {
 }
 
 export enum ModelType {
-    Llama = 'Llama 3.3 70B Instruct',
-    Gemini = 'Gemini 2.0 Flash',
-    GeminiFlash25 = 'Gemini 2.5 Flash'
+    GeminiFlashLite31Preview = 'gemini-3.1-flash-lite-preview',
+    GeminiPro31Preview = 'gemini-3.1-pro-preview',
 }
 
 export enum UsecaseType {
