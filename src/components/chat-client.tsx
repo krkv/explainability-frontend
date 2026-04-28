@@ -34,7 +34,7 @@ interface PendingSuggestionTimeout {
 const SUGGESTION_TRANSITION_MS = 400
 const MAX_HEART_SUGGESTIONS = 10
 const NEW_HEART_SUGGESTION_COUNT = 3
-const ASSISTANT_RESPONSE_TIMEOUT_MS = 60_000
+const ASSISTANT_RESPONSE_TIMEOUT_MS = 30_000
 
 const timedOutAssistantResponses = [
     "I couldn't process that question this time. Please try again.",
