@@ -227,7 +227,7 @@ export default function HomePage() {
                         <div className={styles['faq-item']}>
                             <h3 className={classNames(styles['faq-question'], sansation.className)}>Which LLM models are supported?</h3>
                             <p className={styles['faq-answer']}>
-                                We currently support Google Gemini models, with `gemini-3.1-flash-lite-preview` as the default option and `gemini-3.1-pro-preview` as the second selectable model.
+                                We currently support Google Gemini and OpenAI GPT models, with `gemini-3.1-flash-lite-preview` as the default option alongside `gpt-5.4-mini`.
                             </p>
                         </div>
                     </div>

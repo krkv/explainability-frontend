@@ -21,7 +21,7 @@ export interface SuggestedFollowUpsResponse {
 
 export enum ModelType {
     GeminiFlashLite31Preview = 'gemini-3.1-flash-lite-preview',
-    GeminiPro31Preview = 'gemini-3.1-pro-preview',
+    Gpt54Mini = 'gpt-5.4-mini',
 }
 
 export enum UsecaseType {

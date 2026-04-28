@@ -34,7 +34,7 @@ interface PendingSuggestionTimeout {
 const SUGGESTION_TRANSITION_MS = 400
 const MAX_HEART_SUGGESTIONS = 10
 const NEW_HEART_SUGGESTION_COUNT = 3
-const ASSISTANT_RESPONSE_TIMEOUT_MS = 30_000
+const ASSISTANT_RESPONSE_TIMEOUT_MS = 60_000
 
 const timedOutAssistantResponses = [
     "I couldn't process that question this time. Please try again.",
@@ -630,7 +630,7 @@ export default function ChatClient({
                             <a className={styles['toolbar-button']}>Model: {model}</a>
                             <div className={showModelDropdown ? styles['dropdown-content'] : styles['hidden']}>
                                 <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.GeminiFlashLite31Preview}</a>
-                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.GeminiPro31Preview}</a>
+                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Gpt54Mini}</a>
                             </div>
                         </div>
                     </div>
