@@ -5,6 +5,16 @@ import { AssistantResponse, ChatMessage, ModelType, SuggestedFollowUpsResponse, 
 
 const backendHost = process.env.BACKEND_HOST
 const backendPort = process.env.BACKEND_PORT
+const ASSISTANT_RESPONSE_TIMEOUT_MS = 30_000
+const BACKEND_READY_TIMEOUT_MS = 2_000
+
+const timedOutAssistantResponses = [
+    "I couldn't process that question this time. Please try again.",
+    "That request did not complete in time. Please try again.",
+    "I wasn't able to finish that response just now. Please try again.",
+    "Something got stuck while I was processing that question. Please try again.",
+    "I couldn't get a response in time for that question. Please try again.",
+]
 
 function getBackendUrl(endpoint: string) {
     return `${backendHost}:${backendPort}/${endpoint}`
@@ -30,6 +40,33 @@ function createFallbackResponse(message: string): AssistantResponse {
         freeform_response: message,
         function_calls: [],
     }
+}
+
+function getRandomTimedOutAssistantResponse() {
+    const randomIndex = Math.floor(Math.random() * timedOutAssistantResponses.length)
+    return timedOutAssistantResponses[randomIndex]
+}
+
+async function fetchWithTimeout(
+    input: string,
+    init: RequestInit,
+    timeoutMs: number,
+): Promise<globalThis.Response> {
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+
+    try {
+        return await fetch(input, {
+            ...init,
+            signal: controller.signal,
+        })
+    } finally {
+        clearTimeout(timeoutId)
+    }
+}
+
+function isAbortError(error: unknown) {
+    return error instanceof Error && error.name === 'AbortError'
 }
 
 function normalizeAssistantResponse(response: Partial<AssistantResponse> | null | undefined): AssistantResponse {
@@ -63,22 +100,14 @@ export async function getBackendReady() {
     const endpoint = 'ready'
 
     try {
-        const timeout = new Promise(function (resolve, reject) {
-            return setTimeout(function () {
-                reject('Timeout');
-            }, 2000);
-        });
-
-        const response = fetch(getBackendUrl(endpoint), {
+        const response = await fetchWithTimeout(getBackendUrl(endpoint), {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
             }
-        })
+        }, BACKEND_READY_TIMEOUT_MS)
 
-        const res = await Promise.race([response, timeout]) as globalThis.Response
-
-        if (res.ok) {
+        if (response.ok) {
             return true
         } else {
             return false
@@ -104,11 +133,11 @@ export async function getAssistantResponse(
             usecase: usecase
         }
 
-        const response = await fetch(getBackendUrl(endpoint), {
+        const response = await fetchWithTimeout(getBackendUrl(endpoint), {
             method: "POST",
             headers: await getObservabilityHeaders(sessionId),
             body: JSON.stringify(requestBody)
-        })
+        }, ASSISTANT_RESPONSE_TIMEOUT_MS)
 
         if (!response.ok) {
             return createFallbackResponse("I'm having trouble at the server &#128543; Please, try again later.")
@@ -119,6 +148,11 @@ export async function getAssistantResponse(
         return normalizeAssistantResponse(json.assistantResponse)
     } catch (error) {
         console.error(error instanceof Error ? error.message : error)
+
+        if (isAbortError(error)) {
+            return createFallbackResponse(getRandomTimedOutAssistantResponse())
+        }
+
         return createFallbackResponse("I'm having trouble connecting to the server &#128543; Please, try again later.")
     }
 }
