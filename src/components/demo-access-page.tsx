@@ -92,11 +92,10 @@ export default function DemoAccessPage({
                 </button>
 
                 <p className={styles['info-message']}>
-                    To request an access code, please write to{' '}
-                    <a href='mailto:access@explainabilityassistant.com'>
-                        access@explainabilityassistant.com
+                    For access code, please write to{' '}
+                    <a href='mailto:info@explainabilityassistant.com'>
+                        info@explainabilityassistant.com
                     </a>
-                    .
                 </p>
             </form>
         </div>

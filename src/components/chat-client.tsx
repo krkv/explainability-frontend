@@ -122,7 +122,7 @@ const welcomeMessage: ChatMessage = {
     id: 'welcome-message',
     role: 'assistant',
     content: "<p>Hello! I'm Claire, your explainability assistant. I am here to help you better understand your data, models and predictions.</p>\
-    <p>Ask me anything using the chat box below. You can also use the explore tab to see examples and suggestions.</p>"
+    <p>Ask me anything using the chat box below. Or explore the suggested prompts on the right.</p>"
 }
 
 function formatMessages(messages: ChatMessage[]) {
@@ -247,9 +247,14 @@ const demoMessagesEnergy = [
 ]
 
 const demoMessagesHeart = [
-    'What is current dataset?',
+    'What is the current dataset?',
     'How many patients are predicted positive?',
     'What are the patient IDs?',
+    'Show me the data for patient 10',
+    'Is patient 10 predicted heart disease?',
+    'Explain the prediction for patient 10',
+    'How can we change the prediction for patient 10?',
+    'What is the accuracy of the model?',
     'What kind of machine learning model is used?',
     'How does the model generally decide whether a patient has heart disease?',
 ]
