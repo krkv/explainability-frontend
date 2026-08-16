@@ -270,7 +270,7 @@ export default function ChatClient({
     const [messages, setMessages] = useState([welcomeMessage])
     const [loading, setLoading] = useState(false)
     const [showModelDropdown, setShowModelDropdown] = useState(false)
-    const [model, setModel] = useState(ModelType.GeminiFlashLite31Preview)
+    const [model, setModel] = useState(ModelType.GeminiFlashLite31)
     const [showSidebar, setShowSidebar] = useState(true)
     const [backendReady, setBackendReady] = useState(false)
     const [usecase, setUsecase] = useState<UsecaseType | null>(initialUsecase)
@@ -650,7 +650,7 @@ export default function ChatClient({
                         <div className={styles['dropdown']} onClick={toggleModelDropdown}>
                             <a className={styles['toolbar-button']}>Model: {model}</a>
                             <div className={showModelDropdown ? styles['dropdown-content'] : styles['hidden']}>
-                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.GeminiFlashLite31Preview}</a>
+                                <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.GeminiFlashLite31}</a>
                                 <a className={styles['toolbar-button']} onClick={onSelectModel}>{ModelType.Gpt54Mini}</a>
                             </div>
                         </div>
